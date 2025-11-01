@@ -1,0 +1,35 @@
+.tabs {
+  gap: 1rem;
+
+  &__list {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    gap: 1rem;
+    list-style: none;
+    padding: 0 1rem;
+    margin: 0;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  &__item {
+    color: var(--color-accent-4);
+    cursor: pointer;
+    font-weight: bold;
+    transition: color var(--transition);
+
+    &:hover {
+      color: var(--color-accent-4-hover);
+    }
+
+    &--active {
+      border-bottom: solid 2px var(--color-accent-4);
+    }
+  }
+
+  &__content {
+    display: flex;
+    overflow: hidden;
+  }
+}

@@ -1,0 +1,50 @@
+.todo {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  align-items: center;
+  background-color: var(--bg-main-accent);
+  border-radius: var(--border-radius);
+  margin-bottom: 0.5rem;
+
+  &--done {
+    .todo__input {
+      text-decoration: line-through;
+    }
+  }
+
+  &__edit,
+  &__delete,
+  &__confirm,
+  &__cancel {
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    color: var(--bg-contrast-accent);
+    transition: background-color var(--transition);
+  }
+
+  &__edit {
+    background-color: var(--color-accent-1);
+
+    &:hover {
+      background-color: var(--color-accent-1-hover);
+    }
+  }
+
+  &__delete,
+  &__cancel {
+    background-color: var(--color-accent-2);
+
+    &:hover {
+      background-color: var(--color-accent-2-hover);
+    }
+  }
+
+  &__confirm {
+    background-color: var(--color-accent-3);
+
+    &:hover {
+      background-color: var(--color-accent-3-hover);
+    }
+  }
+}

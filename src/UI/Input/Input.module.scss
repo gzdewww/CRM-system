@@ -1,0 +1,35 @@
+.input {
+  cursor: text;
+  padding: 0;
+
+  font: inherit;
+
+  box-sizing: border-box;
+  width: 100%;
+  background: none;
+  border: solid 1px transparent;
+  outline: none;
+  transition: border var(--transition), color var(--transition);
+
+  &:hover,
+  &:focus-visible {
+    border-bottom-color: currentColor;
+  }
+
+  &:disabled {
+    color: var(--color-secondary);
+    cursor: inherit;
+    pointer-events: none;
+  }
+
+  &:read-only {
+    pointer-events: none;
+  }
+
+  &--error {
+    color: var(--color-accent-2);
+    &::placeholder {
+      color: var(--color-accent-2);
+    }
+  }
+}

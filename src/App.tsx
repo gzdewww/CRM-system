@@ -1,35 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useCallback, useEffect, useState } from "react";
+import { addTodo, deleteTodo, getTodos, updateTodo } from "./api/api";
+import "./App.scss";
+import Tabs from "./components/Tabs/Tabs";
+import TodoForm from "./components/TodoForm/TodoForm";
+import type { MetaResponse } from "./types/MetaResponse";
+import type { Todo } from "./types/Todo";
+import type { TodoInfo } from "./types/TodoInfo";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [todos, setTodos] = useState<MetaResponse<Todo, TodoInfo>>({
+    data: [],
+    meta: {
+      totalAmount: 0,
+    },
+  });
+
+  const fetchTodos = useCallback(async () => {
+    getTodos().then((res) => setTodos(res));
+    console.log("fetch");
+  }, []);
+
+  const updateFetch = useCallback(
+    async (id: number, title?: string, isDone?: boolean) => {
+      await updateTodo(id, title, isDone);
+      fetchTodos();
+    },
+    [fetchTodos]
+  );
+
+  const deleteFetch = useCallback(
+    async (id: number) => {
+      await deleteTodo(id);
+      fetchTodos();
+    },
+    [fetchTodos]
+  );
+
+  const addFetch = useCallback(
+    async (title: string) => {
+      await addTodo(title);
+      fetchTodos();
+    },
+    [fetchTodos]
+  );
+
+  useEffect(() => {
+    fetchTodos();
+  }, [fetchTodos]);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <TodoForm addTodo={addFetch} />
+
+      <Tabs meta={todos} onDelete={deleteFetch} onUpdate={updateFetch} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
