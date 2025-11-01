@@ -15,6 +15,7 @@ export default function Checkbox({ isDone, onToggle }: Props) {
         checked={isDone}
         onChange={onToggle}
         aria-checked={isDone}
+        name="Task checkbox"
       />
       <BsCheckLg className={styles.checkbox__icon} />
     </div>

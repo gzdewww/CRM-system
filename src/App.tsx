@@ -3,6 +3,7 @@ import { addTodo, deleteTodo, getTodos, updateTodo } from "./api/api";
 import "./App.scss";
 import Tabs from "./components/Tabs/Tabs";
 import TodoForm from "./components/TodoForm/TodoForm";
+import TodoList from "./components/TodoList/TodoList";
 import type { MetaResponse } from "./types/MetaResponse";
 import type { Todo } from "./types/Todo";
 import type { TodoInfo } from "./types/TodoInfo";
@@ -14,45 +15,58 @@ function App() {
       totalAmount: 0,
     },
   });
+  const [activeTab, setActiveTab] = useState("all");
 
-  const fetchTodos = useCallback(async () => {
-    getTodos().then((res) => setTodos(res));
-    console.log("fetch");
+  const fetchTodos = useCallback(async (filter: string) => {
+    await getTodos(filter)
+      .then((res) => setTodos(res))
+      .catch(console.error);
+    console.log(`fetch with ${filter} filter`);
   }, []);
 
   const updateFetch = useCallback(
     async (id: number, title?: string, isDone?: boolean) => {
       await updateTodo(id, title, isDone);
-      fetchTodos();
+      fetchTodos(activeTab);
     },
-    [fetchTodos]
+    [fetchTodos, activeTab]
   );
 
   const deleteFetch = useCallback(
     async (id: number) => {
       await deleteTodo(id);
-      fetchTodos();
+      fetchTodos(activeTab);
     },
-    [fetchTodos]
+    [fetchTodos, activeTab]
   );
 
   const addFetch = useCallback(
     async (title: string) => {
       await addTodo(title);
-      fetchTodos();
+      fetchTodos(activeTab);
     },
-    [fetchTodos]
+    [fetchTodos, activeTab]
   );
 
   useEffect(() => {
-    fetchTodos();
-  }, [fetchTodos]);
+    fetchTodos(activeTab);
+  }, [fetchTodos, activeTab]);
 
   return (
     <>
       <TodoForm addTodo={addFetch} />
 
-      <Tabs meta={todos} onDelete={deleteFetch} onUpdate={updateFetch} />
+      <Tabs
+        info={todos.info ?? { all: 0, inWork: 0, completed: 0 }}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
+
+      <TodoList
+        todos={todos.data}
+        onUpdate={updateFetch}
+        onDelete={deleteFetch}
+      />
     </>
   );
 }

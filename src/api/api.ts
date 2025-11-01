@@ -3,16 +3,12 @@ import type { Todo } from "../types/Todo";
 import type { TodoInfo } from "../types/TodoInfo";
 import type { TodoRequest } from "../types/TodoRequest";
 
-export default function api() {
-  return {
-    getTodos,
-    addTodo,
-    deleteTodo,
-    updateTodo,
-  };
-}
-export async function getTodos(): Promise<MetaResponse<Todo, TodoInfo>> {
-  const response = await fetch("https://easydev.club/api/v1/todos");
+export async function getTodos(
+  filter: string
+): Promise<MetaResponse<Todo, TodoInfo>> {
+  const response = await fetch(
+    `https://easydev.club/api/v1/todos${filter ? `?filter=${filter}` : ""}`
+  );
   return await response.json();
 }
 

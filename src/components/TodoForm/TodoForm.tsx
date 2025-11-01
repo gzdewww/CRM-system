@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import Button from "../../UI/Button/Button";
 import Input from "../../UI/Input/Input";
 import styles from "./TodoForm.module.scss";
+import validate from "../../api/validate";
 
 type Props = {
   addTodo: (title: string) => void;
@@ -13,19 +14,13 @@ export default function TodoForm({ addTodo }: Props) {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const validate = () => {
-    if (value.trim().length < 2) throw new Error("Too short");
-    if (value.trim().length > 64) throw new Error("Too long");
-    return true;
-  };
-
   return (
     <form
       className={styles["todo-form"]}
       onSubmit={(e) => {
         e.preventDefault();
         try {
-          validate();
+          validate(value);
           addTodo(value);
           setValue("");
         } catch (error) {
