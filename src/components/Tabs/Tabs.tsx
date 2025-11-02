@@ -3,10 +3,12 @@ import type { TodoInfo } from "../../types/TodoInfo";
 import styles from "./Tabs.module.scss";
 
 type Props = {
-  info: TodoInfo;
+  info?: TodoInfo;
   activeTab: string;
   setActiveTab: (tab: string) => void;
 };
+
+const keys: (keyof TodoInfo)[] = ["all", "inWork", "completed"];
 
 const dictionary: Record<keyof TodoInfo, string> = {
   all: "Все",
@@ -14,14 +16,16 @@ const dictionary: Record<keyof TodoInfo, string> = {
   completed: "Выполненные",
 };
 
-const tabs: (keyof TodoInfo)[] = ["all", "inWork", "completed"];
-
-export default function Tabs({ info, activeTab, setActiveTab }: Props) {
+export default function Tabs({
+  info = { all: 0, inWork: 0, completed: 0 },
+  activeTab,
+  setActiveTab,
+}: Props) {
   return (
     <div className={styles.tabs}>
       <nav className={styles.tabs__nav}>
         <ul className={styles.tabs__list}>
-          {tabs.map((tab) => (
+          {keys.map((tab) => (
             <li
               key={tab}
               tabIndex={0}

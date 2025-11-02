@@ -4,27 +4,18 @@ import styles from "./TodoList.module.scss";
 
 type Props = {
   todos: Todo[];
-  onUpdate: (id: number, title?: string, isDone?: boolean) => Promise<void>;
-  onDelete: (id: number) => Promise<void>;
-  style?: React.CSSProperties;
+  fetch: () => void;
 };
 
-export default function TodoList({
-  todos,
-  onUpdate,
-  onDelete,
-  style,
-  ...props
-}: Props) {
+export default function TodoList({ todos, fetch, ...props }: Props) {
   return (
-    <ul className={styles["todo-list"]} style={style} {...props}>
+    <ul className={styles["todo-list"]} {...props}>
       {todos.length > 0 ? (
         todos.map((todo) => (
           <TodoItem
             key={todo.id}
             todo={todo}
-            updateTodo={(title, isDone) => onUpdate(todo.id, title, isDone)}
-            deleteTodo={() => onDelete(todo.id)}
+            fetch={fetch}
           />
         ))
       ) : (

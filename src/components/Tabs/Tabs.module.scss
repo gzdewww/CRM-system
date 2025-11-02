@@ -19,12 +19,22 @@
     font-weight: bold;
     transition: color var(--transition);
 
+    &::after {
+      content: "";
+      display: block;
+      width: 0;
+      margin: auto;
+      height: 2px;
+      background-color: var(--color-accent-4);
+      transition: width var(--transition);
+    }
+
     &:hover {
       color: var(--color-accent-4-hover);
     }
 
-    &--active {
-      border-bottom: solid 2px var(--color-accent-4);
+    &--active::after {
+      width: 100%;
     }
   }
 }

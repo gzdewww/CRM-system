@@ -5,26 +5,40 @@ import {
   BsXSquare,
 } from "react-icons/bs";
 
+import Alert from "../../UI/Alert/Alert";
 import Button from "../../UI/Button/Button";
 import Input from "../../UI/Input/Input";
 
+import clsx from "clsx";
 import { useRef, useState } from "react";
+import { deleteTodo, updateTodo } from "../../api/api";
+import validate from "../../helpers/validate";
 import type { Todo } from "../../types/Todo";
 import Checkbox from "../../UI/Checkbox/Checkbox";
 import styles from "./TodoItem.module.scss";
-import validate from "../../api/validate";
-import Alert from "../../UI/Alert/Alert";
 
 type Props = {
   todo: Todo;
-  updateTodo: (title?: string, isDone?: boolean) => void;
-  deleteTodo: () => void;
+  fetch: () => void;
 };
 
-export default function TodoItem({ todo, updateTodo, deleteTodo }: Props) {
+export default function TodoItem({ todo, fetch }: Props) {
   const [title, setTitle] = useState(todo.title);
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState("");
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const updateFetch = async (id: number, title?: string, isDone?: boolean) => {
+    await updateTodo(id, title, isDone).catch(console.error);
+    fetch();
+  };
+
+  const deleteFetch = async (id: number) => {
+    setIsTransitioning(true);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    await deleteTodo(id).catch(console.error);
+    fetch();
+  };
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -39,7 +53,7 @@ export default function TodoItem({ todo, updateTodo, deleteTodo }: Props) {
     try {
       validate(title);
       setIsEditing(false);
-      updateTodo(title, todo.isDone);
+      updateFetch(todo.id, title);
       inputRef.current?.setSelectionRange(0, 0);
       inputRef.current?.blur();
       setError("");
@@ -58,11 +72,17 @@ export default function TodoItem({ todo, updateTodo, deleteTodo }: Props) {
   }
 
   return (
-    <li className={`${styles.todo} ${todo.isDone ? styles["todo--done"] : ""}`}>
+    <li
+      className={clsx(
+        styles.todo,
+        todo.isDone && styles["todo--done"],
+        isTransitioning && styles["todo--sliding"]
+      )}
+    >
       {error && <Alert message={error} type="error" />}
       <Checkbox
         isDone={todo.isDone}
-        onToggle={() => updateTodo(todo.title, !todo.isDone)}
+        onToggle={() => updateFetch(todo.id, undefined, !todo.isDone)}
       />
       <Input
         ref={inputRef}
@@ -119,7 +139,9 @@ export default function TodoItem({ todo, updateTodo, deleteTodo }: Props) {
       <Button
         aria-label="Удалить задачу"
         className={styles.todo__delete}
-        onClick={deleteTodo}
+        onClick={() => {
+          deleteFetch(todo.id);
+        }}
       >
         <BsTrashFill />
       </Button>

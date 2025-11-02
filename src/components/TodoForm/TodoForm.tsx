@@ -2,26 +2,32 @@ import { useRef, useState } from "react";
 import Button from "../../UI/Button/Button";
 import Input from "../../UI/Input/Input";
 import styles from "./TodoForm.module.scss";
-import validate from "../../api/validate";
+import validate from "../../helpers/validate";
+import { addTodo } from "../../api/api";
 
 type Props = {
-  addTodo: (title: string) => void;
+  fetch: () => void;
 };
 
-export default function TodoForm({ addTodo }: Props) {
+export default function TodoForm({ fetch }: Props) {
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
+
+  const addFetch = async (title: string) => {
+    await addTodo(title).catch(console.error);
+    fetch();
+  };
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
     <form
       className={styles["todo-form"]}
-      onSubmit={(e) => {
+      onSubmit={async(e) => {
         e.preventDefault();
         try {
           validate(value);
-          addTodo(value);
+          await addFetch(value);
           setValue("");
         } catch (error) {
           setValue("");
