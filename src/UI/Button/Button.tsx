@@ -3,7 +3,7 @@ import styles from "./Button.module.scss";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
   variant?: "primary" | "secondary" | "danger" | "success"; //TODO: styles for each variant
 }
 

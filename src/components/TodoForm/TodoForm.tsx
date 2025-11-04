@@ -46,9 +46,7 @@ export default memo(function TodoForm({ onAdd }: Props) {
         onChange={handleChange}
         name="task"
       />
-      <Button type="submit" onClick={() => {}}>
-        Add
-      </Button>
+      <Button type="submit">Add</Button>
     </form>
   );
 });
