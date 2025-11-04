@@ -1,26 +1,23 @@
-import type { Todo } from "../../types/Todo";
+import { memo } from "react";
+import type { Todo } from "../../types/TodoTypes";
 import TodoItem from "../TodoItem/TodoItem";
 import styles from "./TodoList.module.scss";
 
 type Props = {
   todos: Todo[];
-  fetch: () => void;
+  onUpdate: () => void;
 };
 
-export default function TodoList({ todos, fetch, ...props }: Props) {
+export default memo(function TodoList({ todos, onUpdate, ...props }: Props) {
   return (
     <ul className={styles["todo-list"]} {...props}>
       {todos.length > 0 ? (
         todos.map((todo) => (
-          <TodoItem
-            key={todo.id}
-            todo={todo}
-            fetch={fetch}
-          />
+          <TodoItem key={todo.id} todo={todo} onUpdate={onUpdate} />
         ))
       ) : (
         <p>Список пуст</p>
       )}
     </ul>
   );
-}
+});

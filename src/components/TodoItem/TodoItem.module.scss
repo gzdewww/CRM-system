@@ -10,12 +10,13 @@
   animation: slideIn var(--transition);
 
   &--done {
-    .todo__input {
+    .todo__form input {
       text-decoration: line-through;
+      color: var(--color-secondary);
     }
   }
 
-  &--sliding {
+  &--transition {
     animation: slideOut var(--transition) forwards;
   }
 
@@ -23,42 +24,18 @@
   &__delete,
   &__confirm,
   &__cancel {
-    font-size: 1.2rem;
-    padding: 0.5rem;
-    color: var(--bg-contrast-accent);
-    transition: background-color var(--transition);
+    font-size: 1.5rem;
   }
 
-  &__edit {
-    background-color: var(--color-accent-1);
-
-    &:hover {
-      background-color: var(--color-accent-1-hover);
-    }
-  }
-
-  &__delete,
-  &__cancel {
-    background-color: var(--color-accent-2);
-
-    &:hover {
-      background-color: var(--color-accent-2-hover);
-    }
-  }
-
-  &__confirm {
-    background-color: var(--color-accent-3);
-
-    &:hover {
-      background-color: var(--color-accent-3-hover);
-    }
+  &__form {
+    flex-grow: 1;
   }
 }
 
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateX(-1rem);
   }
   to {
     opacity: 1;
@@ -73,6 +50,6 @@
   }
   to {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateX(1rem);
   }
 }

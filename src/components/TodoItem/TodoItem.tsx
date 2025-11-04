@@ -5,146 +5,137 @@ import {
   BsXSquare,
 } from "react-icons/bs";
 
-import Alert from "../../UI/Alert/Alert";
 import Button from "../../UI/Button/Button";
 import Input from "../../UI/Input/Input";
 
-import clsx from "clsx";
-import { useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { deleteTodo, updateTodo } from "../../api/api";
-import validate from "../../helpers/validate";
-import type { Todo } from "../../types/Todo";
+import validateTodo from "../../helpers/validateTodo";
+import type { Todo } from "../../types/TodoTypes";
 import Checkbox from "../../UI/Checkbox/Checkbox";
 import styles from "./TodoItem.module.scss";
 
 type Props = {
   todo: Todo;
-  fetch: () => void;
+  onUpdate: () => void;
 };
 
-export default function TodoItem({ todo, fetch }: Props) {
-  const [title, setTitle] = useState(todo.title);
-  const [isEditing, setIsEditing] = useState(false);
-  const [error, setError] = useState("");
-  const [isTransitioning, setIsTransitioning] = useState(false);
+export default memo(function TodoItem({ todo, onUpdate }: Props) {
+  const [title, setTitle] = useState<string>(todo.title);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [isRemoving, setIsRemoving] = useState<boolean>(false);
 
-  const updateFetch = async (id: number, title?: string, isDone?: boolean) => {
-    await updateTodo(id, title, isDone).catch(console.error);
-    fetch();
-  };
+  const todoElement = useRef<HTMLLIElement>(null);
 
-  const deleteFetch = async (id: number) => {
-    setIsTransitioning(true);
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    await deleteTodo(id).catch(console.error);
-    fetch();
-  };
-
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  function confirmEdit() {
-    if (title === todo.title) {
-      setIsEditing(false);
-      setError("");
-      inputRef.current?.setSelectionRange(0, 0);
-      inputRef.current?.blur();
+  useEffect(() => {
+    const element = todoElement.current;
+    if (!element) {
       return;
     }
+
+    const handleAnimationEnd = (event: AnimationEvent) => {
+      if (isRemoving && todoElement.current === event.target) {
+        onUpdate();
+      }
+    };
+
+    element.addEventListener("animationend", handleAnimationEnd);
+    return () => {
+      element.removeEventListener("animationend", handleAnimationEnd);
+    };
+  }, [isRemoving, onUpdate]);
+
+  const handleToggle = async () => {
+    await updateTodo(todo.id, { isDone: !todo.isDone }).catch(alert);
+    onUpdate();
+  };
+
+  const handleDelete = async () => {
+    setIsRemoving(true);
+    await deleteTodo(todo.id).catch(alert);
+  };
+
+  const handleConfirm = async () => {
     try {
-      validate(title);
+      const error = validateTodo(title);
+      if (error) {
+        throw new Error(error);
+      }
+      await updateTodo(todo.id, { title }).catch(alert);
+      onUpdate();
       setIsEditing(false);
-      updateFetch(todo.id, title);
-      inputRef.current?.setSelectionRange(0, 0);
-      inputRef.current?.blur();
       setError("");
     } catch (error) {
       if (error instanceof Error) setError(error.message);
       else setError("Something went wrong");
-      setTitle(todo.title);
     }
-  }
+  };
 
-  function cancelEdit() {
+  const handleCancel = () => {
     setIsEditing(false);
     setTitle(todo.title);
-    inputRef.current?.blur();
     setError("");
-  }
+  };
 
   return (
     <li
-      className={clsx(
+      ref={todoElement}
+      className={[
         styles.todo,
-        todo.isDone && styles["todo--done"],
-        isTransitioning && styles["todo--sliding"]
-      )}
+        todo.isDone ? styles["todo--done"] : "",
+        isRemoving ? styles["todo--transition"] : "",
+      ].join(" ")}
     >
-      {error && <Alert message={error} type="error" />}
-      <Checkbox
-        isDone={todo.isDone}
-        onToggle={() => updateFetch(todo.id, undefined, !todo.isDone)}
-      />
-      <Input
-        ref={inputRef}
-        aria-label={`Текст задачи: ${todo.title}`}
-        className={styles.todo__input}
-        value={title}
-        onChange={(event) => {
-          setTitle(event.target.value);
-        }}
-        disabled={todo.isDone}
-        readOnly={!isEditing}
-        onKeyDown={(e) => {
-          setError("");
-          if (e.key === "Enter") confirmEdit();
-          if (e.key === "Escape") cancelEdit();
-        }}
-      />
-      {!todo.isDone ? (
-        isEditing ? (
-          <>
-            <Button
-              aria-label="Подтвердить"
-              className={styles.todo__confirm}
-              onClick={confirmEdit}
-            >
-              <BsCheck2Square />
-            </Button>
-            <Button
-              aria-label="Отменить"
-              className={styles.todo__cancel}
-              onClick={cancelEdit}
-            >
-              <BsXSquare />
-            </Button>
-          </>
-        ) : (
+      <Checkbox isDone={todo.isDone} onToggle={handleToggle} />
+      <form
+        id={todo.id.toString()}
+        onSubmit={(e) => e.preventDefault()}
+        className={styles.todo__form}
+      >
+        <Input
+          aria-label={`Текст задачи: ${todo.title}`}
+          value={title}
+          onChange={(event) => {
+            setTitle(event.target.value);
+          }}
+          readOnly={!isEditing}
+          error={error}
+        />
+      </form>
+      {isEditing ? (
+        <>
           <Button
-            aria-label="Редактировать задачу"
-            className={styles.todo__edit}
-            onClick={() => {
-              setIsEditing(true);
-              inputRef.current?.focus();
-              inputRef.current?.setSelectionRange(
-                0,
-                inputRef.current.value.length
-              );
-            }}
+            aria-label="Подтвердить"
+            type="submit"
+            form={todo.id.toString()}
+            onClick={handleConfirm}
+            variant="success"
           >
-            <BsPencilSquare />
+            <BsCheck2Square className={styles.todo__confirm} />
           </Button>
-        )
-      ) : null}
+          <Button aria-label="Отменить" onClick={handleCancel}>
+            <BsXSquare className={styles.todo__cancel} />
+          </Button>
+        </>
+      ) : (
+        <Button
+          aria-label="Редактировать задачу"
+          onClick={() => {
+            setIsEditing(true);
+          }}
+        >
+          <BsPencilSquare className={styles.todo__edit} />
+        </Button>
+      )}
 
       <Button
         aria-label="Удалить задачу"
-        className={styles.todo__delete}
-        onClick={() => {
-          deleteFetch(todo.id);
-        }}
+        onClick={handleDelete}
+        variant="danger"
       >
-        <BsTrashFill />
+        <BsTrashFill className={styles.todo__delete} />
       </Button>
     </li>
   );
-}
+});

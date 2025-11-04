@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import styles from "./Input.module.scss";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -6,8 +5,6 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   placeholder?: string;
   error?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  className?: string;
-  ref?: React.Ref<HTMLInputElement>;
 }
 
 export default function Input({
@@ -15,20 +12,25 @@ export default function Input({
   placeholder,
   error,
   onChange,
-  className,
-  ref,
   ...props
 }: InputProps) {
   return (
-    <input
-      ref={ref}
-      type="text"
-      value={value}
-      onChange={onChange}
-      placeholder={error || placeholder}
-      aria-invalid={Boolean(error)}
-      className={clsx(styles.input, className, error && styles["input--error"])}
-      {...props}
-    />
+    <section className={styles.input}>
+      <input
+        type="text"
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        aria-invalid={Boolean(error)}
+        className={[
+          styles.input__textfield,
+          error ? styles["input__textfield--error"] : "",
+        ].join(" ")}
+        {...props}
+      />
+      <p className={styles.input__error} data-error={Boolean(error)}>
+        {error}
+      </p>
+    </section>
   );
 }

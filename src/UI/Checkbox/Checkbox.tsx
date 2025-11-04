@@ -8,7 +8,7 @@ type Props = {
 
 export default function Checkbox({ isDone, onToggle }: Props) {
   return (
-    <div className={styles.checkbox}>
+    <label className={styles.checkbox}>
       <input
         className={styles.checkbox__input}
         type="checkbox"
@@ -18,6 +18,6 @@ export default function Checkbox({ isDone, onToggle }: Props) {
         name="Task checkbox"
       />
       <BsCheckLg className={styles.checkbox__icon} />
-    </div>
+    </label>
   );
 }

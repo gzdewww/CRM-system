@@ -1,20 +1,38 @@
 .button {
+  --bg: var(--color-accent-1);
+  --color: var(--color-main);
+  --bg-hover: var(--color-accent-1-hover);
+
+  &[data-variant="secondary"] {
+    --bg: var(--color-accent-4);
+    --bg-hover: var(--color-accent-4-hover);
+  }
+  &[data-variant="danger"] {
+    --bg: var(--color-accent-2);
+    --bg-hover: var(--color-accent-2-hover);
+  }
+  &[data-variant="success"] {
+    --bg: var(--color-accent-3);
+    --bg-hover: var(--color-accent-3-hover);
+  }
+
   cursor: pointer;
   font: inherit;
-  color: inherit;
-  background: transparent;
+  color: var(--color);
+  background: var(--bg);
 
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
 
-  padding: 0;
+  padding: 1rem;
   margin: 0;
   border: none;
   border-radius: var(--border-radius-sm);
 
-  transition: background-color var(--transition-fast),
-    color var(--transition-fast);
+  transition: background-color var(--transition), color var(--transition),
+  outline var(--transition);
 
   &:disabled {
     pointer-events: none;
@@ -22,7 +40,11 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-main);
-    outline-offset: 0.2rem;
+    outline: 2px solid var(--bg);
+    outline-offset: 0.125rem;
+  }
+
+  &:hover {
+    background-color: var(--bg-hover);
   }
 }

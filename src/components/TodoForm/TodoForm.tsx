@@ -1,56 +1,54 @@
-import { useRef, useState } from "react";
+import { memo, useState } from "react";
+import { addTodo } from "../../api/api";
+import validateTodo from "../../helpers/validateTodo";
 import Button from "../../UI/Button/Button";
 import Input from "../../UI/Input/Input";
 import styles from "./TodoForm.module.scss";
-import validate from "../../helpers/validate";
-import { addTodo } from "../../api/api";
 
 type Props = {
-  fetch: () => void;
+  onAdd: () => void;
 };
 
-export default function TodoForm({ fetch }: Props) {
-  const [value, setValue] = useState("");
-  const [error, setError] = useState("");
+export default memo(function TodoForm({ onAdd }: Props) {
+  const [value, setValue] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
-  const addFetch = async (title: string) => {
-    await addTodo(title).catch(console.error);
-    fetch();
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+    setError("");
   };
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const error = validateTodo(value);
+      if (error) {
+        throw new Error(error);
+      }
+      await addTodo(value.trim()).catch(console.error);
+      onAdd();
+      setValue("");
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Something went wrong");
+      }
+    }
+  };
 
   return (
-    <form
-      className={styles["todo-form"]}
-      onSubmit={async(e) => {
-        e.preventDefault();
-        try {
-          validate(value);
-          await addFetch(value);
-          setValue("");
-        } catch (error) {
-          setValue("");
-          if (error instanceof Error) setError(error.message);
-          else setError("Something went wrong");
-        }
-      }}
-    >
+    <form className={styles["todo-form"]} onSubmit={handleSubmit}>
       <Input
-        ref={inputRef}
         value={value}
         placeholder="Task to be done..."
         error={error}
-        onChange={(e) => {
-          setValue(e.target.value);
-          setError("");
-        }}
-        className={styles["todo-form__input"]}
+        onChange={handleChange}
         name="task"
       />
-      <Button className={styles["todo-form__button"]} type="submit">
+      <Button type="submit" onClick={() => {}}>
         Add
       </Button>
     </form>
   );
-}
+});

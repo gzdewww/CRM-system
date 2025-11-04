@@ -10,8 +10,8 @@
     width: 1.5rem;
     height: 1.5rem;
     appearance: none;
-    border: solid var(--color-main) 1px;
-    transition: filter var(--transition-fast);
+    border: solid var(--color-secondary) 1px;
+    transition: filter var(--transition);
     border-radius: var(--border-radius-full);
     transition: background-color var(--transition),
       border-color var(--transition);
@@ -47,7 +47,7 @@
     bottom: 0;
     margin: auto;
     pointer-events: none;
-    color: var(--bg-contrast-accent);
+    color: var(--color-main);
     transform: scale(0);
 
     transition: transform var(--transition);

@@ -1,13 +1,17 @@
-import type { MetaResponse } from "../types/MetaResponse";
-import type { Todo } from "../types/Todo";
-import type { TodoInfo } from "../types/TodoInfo";
-import type { TodoRequest } from "../types/TodoRequest";
+import type {
+  MetaResponse,
+  Todo,
+  TodoInfo,
+  TodoRequest,
+} from "../types/TodoTypes";
+
+const TODO_URL = import.meta.env.VITE_TODO_API_URL;
 
 export async function getTodos(
-  filter: string
+  filter?: keyof TodoInfo
 ): Promise<MetaResponse<Todo, TodoInfo>> {
   const response = await fetch(
-    `https://easydev.club/api/v1/todos${filter ? `?filter=${filter}` : ""}`
+    `${TODO_URL}${filter ? `?filter=${filter}` : ""}`
   );
   return await response.json();
 }
@@ -18,7 +22,7 @@ export async function addTodo(title: string): Promise<Todo> {
     isDone: false,
   };
 
-  const response = await fetch("https://easydev.club/api/v1/todos", {
+  const response = await fetch(TODO_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -29,23 +33,14 @@ export async function addTodo(title: string): Promise<Todo> {
 }
 
 export async function deleteTodo(id: number): Promise<number> {
-  const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
+  const response = await fetch(`${TODO_URL}/${id}`, {
     method: "DELETE",
   });
   return response.status;
 }
 
-export async function updateTodo(
-  id: number,
-  title?: string,
-  isDone?: boolean
-): Promise<Todo> {
-  const todo: TodoRequest = {
-    title,
-    isDone,
-  };
-
-  const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
+export async function updateTodo(id: number, todo: TodoRequest): Promise<Todo> {
+  const response = await fetch(`${TODO_URL}/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

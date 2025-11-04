@@ -1,20 +1,19 @@
-import { clsx } from "clsx";
-import type { TodoInfo } from "../../types/TodoInfo";
+import type { TodoInfo } from "../../types/TodoTypes";
 import styles from "./Tabs.module.scss";
 
 type Props = {
   info?: TodoInfo;
   activeTab: string;
-  setActiveTab: (tab: string) => void;
+  setActiveTab: (tab: keyof TodoInfo) => void;
 };
 
-const keys: (keyof TodoInfo)[] = ["all", "inWork", "completed"];
-
-const dictionary: Record<keyof TodoInfo, string> = {
+const tabLabel: Record<keyof TodoInfo, string> = {
   all: "Все",
   inWork: "Активные",
   completed: "Выполненные",
 };
+
+const keys: (keyof TodoInfo)[] = Object.keys(tabLabel) as (keyof TodoInfo)[];
 
 export default function Tabs({
   info = { all: 0, inWork: 0, completed: 0 },
@@ -22,24 +21,22 @@ export default function Tabs({
   setActiveTab,
 }: Props) {
   return (
-    <div className={styles.tabs}>
-      <nav className={styles.tabs__nav}>
-        <ul className={styles.tabs__list}>
-          {keys.map((tab) => (
-            <li
-              key={tab}
-              tabIndex={0}
-              className={clsx(
-                styles.tabs__item,
-                activeTab === tab && styles["tabs__item--active"]
-              )}
-              onClick={() => setActiveTab(tab)}
-            >
-              {`${dictionary[tab]} (${info[tab]})`}
-            </li>
-          ))}
-        </ul>
-      </nav>
-    </div>
+    <nav className={styles.tabs}>
+      <ul className={styles.tabs__list}>
+        {keys.map((tab) => (
+          <li
+            key={tab}
+            tabIndex={0}
+            className={[
+              styles.tabs__item,
+              activeTab === tab ? styles["tabs__item--active"] : "",
+            ].join(" ")}
+            onClick={() => setActiveTab(tab)}
+          >
+            {`${tabLabel[tab]} (${info[tab]})`}
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }
