@@ -22,10 +22,9 @@ export default function Input({
         onChange={onChange}
         placeholder={placeholder}
         aria-invalid={Boolean(error)}
-        className={[
-          styles.input__textfield,
-          error ? styles["input__textfield--error"] : "",
-        ].join(" ")}
+        className={`${styles.input__textfield} ${
+          error ? styles["input__textfield--error"] : ""
+        }`}
         {...props}
       />
       <p className={styles.input__error} data-error={Boolean(error)}>

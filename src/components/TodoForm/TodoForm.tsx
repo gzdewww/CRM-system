@@ -25,7 +25,7 @@ export default memo(function TodoForm({ onAdd }: Props) {
       if (error) {
         throw new Error(error);
       }
-      await addTodo(value.trim()).catch(console.error);
+      await addTodo(value.trim());
       onAdd();
       setValue("");
     } catch (error) {

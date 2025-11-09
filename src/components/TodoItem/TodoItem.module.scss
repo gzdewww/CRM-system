@@ -16,10 +16,6 @@
     }
   }
 
-  &--transition {
-    animation: slideOut var(--transition) forwards;
-  }
-
   &__edit,
   &__delete,
   &__confirm,
@@ -40,16 +36,5 @@
   to {
     opacity: 1;
     transform: translateX(0);
-  }
-}
-
-@keyframes slideOut {
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(1rem);
   }
 }

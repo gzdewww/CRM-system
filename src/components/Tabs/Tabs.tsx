@@ -27,10 +27,9 @@ export default function Tabs({
           <li
             key={tab}
             tabIndex={0}
-            className={[
-              styles.tabs__item,
-              activeTab === tab ? styles["tabs__item--active"] : "",
-            ].join(" ")}
+            className={`${styles.tabs__item} ${
+              activeTab === tab ? styles["tabs__item--active"] : ""
+            }`}
             onClick={() => setActiveTab(tab)}
           >
             {`${tabLabel[tab]} (${info[tab]})`}

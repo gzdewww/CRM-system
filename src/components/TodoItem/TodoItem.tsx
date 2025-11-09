@@ -8,7 +8,7 @@ import {
 import Button from "../../UI/Button/Button";
 import Input from "../../UI/Input/Input";
 
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useState } from "react";
 import { deleteTodo, updateTodo } from "../../api/api";
 import validateTodo from "../../helpers/validateTodo";
 import type { Todo } from "../../types/TodoTypes";
@@ -24,27 +24,6 @@ export default memo(function TodoItem({ todo, onUpdate }: Props) {
   const [title, setTitle] = useState<string>(todo.title);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [isRemoving, setIsRemoving] = useState<boolean>(false);
-
-  const todoElement = useRef<HTMLLIElement>(null);
-
-  useEffect(() => {
-    const element = todoElement.current;
-    if (!element) {
-      return;
-    }
-
-    const handleAnimationEnd = (event: AnimationEvent) => {
-      if (isRemoving && todoElement.current === event.target) {
-        onUpdate();
-      }
-    };
-
-    element.addEventListener("animationend", handleAnimationEnd);
-    return () => {
-      element.removeEventListener("animationend", handleAnimationEnd);
-    };
-  }, [isRemoving, onUpdate]);
 
   const handleToggle = async () => {
     await updateTodo(todo.id, { isDone: !todo.isDone }).catch(alert);
@@ -52,8 +31,8 @@ export default memo(function TodoItem({ todo, onUpdate }: Props) {
   };
 
   const handleDelete = async () => {
-    setIsRemoving(true);
     await deleteTodo(todo.id).catch(alert);
+    onUpdate();
   };
 
   const handleConfirm = async () => {
@@ -62,7 +41,7 @@ export default memo(function TodoItem({ todo, onUpdate }: Props) {
       if (error) {
         throw new Error(error);
       }
-      await updateTodo(todo.id, { title }).catch(alert);
+      await updateTodo(todo.id, { title });
       onUpdate();
       setIsEditing(false);
       setError("");
@@ -78,21 +57,12 @@ export default memo(function TodoItem({ todo, onUpdate }: Props) {
     setError("");
   };
 
+  const formId = `todo_form-${todo.id.toString()}`;
+
   return (
-    <li
-      ref={todoElement}
-      className={[
-        styles.todo,
-        todo.isDone ? styles["todo--done"] : "",
-        isRemoving ? styles["todo--transition"] : "",
-      ].join(" ")}
-    >
+    <li className={`${styles.todo} ${todo.isDone ? styles["todo--done"] : ""}`}>
       <Checkbox isDone={todo.isDone} onToggle={handleToggle} />
-      <form
-        id={todo.id.toString()}
-        onSubmit={(e) => e.preventDefault()}
-        className={styles.todo__form}
-      >
+      <form id={formId} onSubmit={handleConfirm} className={styles.todo__form}>
         <Input
           aria-label={`Текст задачи: ${todo.title}`}
           value={title}
@@ -108,8 +78,7 @@ export default memo(function TodoItem({ todo, onUpdate }: Props) {
           <Button
             aria-label="Подтвердить"
             type="submit"
-            form={todo.id.toString()}
-            onClick={handleConfirm}
+            form={formId}
             variant="success"
           >
             <BsCheck2Square className={styles.todo__confirm} />
