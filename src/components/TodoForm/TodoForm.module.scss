@@ -1,0 +1,26 @@
+.todo-form {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  &__input {
+    padding: 1rem 0;
+  }
+
+  &__button {
+    font-weight: bold;
+    color: var(--bg-contrast);
+    max-width: 10rem;
+    justify-content: center;
+    flex-grow: 1;
+    background-color: var(--color-accent-1);
+    padding: 1rem 2rem;
+    transition: background-color var(--transition);
+
+    &:hover {
+      background-color: var(--color-accent-1-hover);
+    }
+  }
+}

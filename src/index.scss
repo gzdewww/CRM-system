@@ -1,0 +1,58 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* VARIABLES */
+
+  --bg-main: #1f1f1f;
+  --bg-main-accent: #2f2f2f;
+  --bg-main-hover: #3f3f3f;
+  --color-main: #f1f4f9;
+  --color-main-accent: #fff;
+  --color-main-hover: #d1d1d1;
+
+  --color-secondary: #838383;
+
+  --color-accent-1: #5593ff;
+  --color-accent-2: #fa6b5b;
+  --color-accent-3: #24a419;
+  --color-accent-4: #29b1e5;
+
+  --color-accent-1-hover: #3d7ae0;
+  --color-accent-2-hover: #e64f3d;
+  --color-accent-3-hover: #1d8614;
+  --color-accent-4-hover: #1f95c7;
+
+  --transition: 0.2s ease-in-out;
+
+  --border-radius: 1rem;
+  --border-radius-sm: 0.5rem;
+  --border-radius-full: 50%;
+
+  color: var(--color-main);
+  background-color: var(--bg-main);
+
+  transition: all var(--transition);
+
+  @media (prefers-color-scheme: light) {
+    background-color: var(--color-main);
+    color: var(--bg-main);
+
+    --color-main-accent: #2f2f2f;
+    --color-main-hover: #3f3f3f;
+
+    --bg-main-accent: #fff;
+    --bg-main-hover: #d1d1d1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    --transition: none;
+  }
+}
