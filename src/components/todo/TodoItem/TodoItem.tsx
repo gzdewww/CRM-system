@@ -12,14 +12,15 @@ import {
   Flex,
   Form,
   Input,
-  message,
   Space,
 } from "antd";
+import useApp from "antd/es/app/useApp";
 import { useForm } from "antd/es/form/Form";
 import { memo, useState } from "react";
 import { deleteTodo, updateTodo } from "../../../api/api";
 import type { Todo } from "../../../types/todo.types";
 
+// занимает не всю ширину, не нашёл фикс без стилей в том виде, который я хочу
 const flexGrow1 = {
   flexGrow: "1",
 };
@@ -33,10 +34,12 @@ export default memo(function TodoItem({ todo, onUpdate }: Props) {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [form] = useForm();
 
+  const { message } = useApp();
+
   const initial = todo.title;
 
   const handleToggle = async () => {
-    await updateTodo(todo.id, { isDone: !todo.isDone }).catch(alert);
+    await updateTodo(todo.id, { isDone: !todo.isDone }).catch(message.error);
     onUpdate();
   };
 
@@ -46,7 +49,8 @@ export default memo(function TodoItem({ todo, onUpdate }: Props) {
   };
 
   const handleDelete = async () => {
-    await deleteTodo(todo.id).catch(alert);
+    await deleteTodo(todo.id).catch(message.error);
+    message.success("Задача удалена");
     onUpdate();
   };
 
@@ -86,11 +90,13 @@ export default memo(function TodoItem({ todo, onUpdate }: Props) {
               rules={[
                 {
                   required: true,
+                  whitespace: true,
                   message: "Текст задачи не может быть пустым",
                 },
                 {
                   min: 2,
                   max: 64,
+                  transform: (value) => value.trim(),
                   message: "Текст задачи должен быть от 2 до 64 символов",
                 },
               ]}

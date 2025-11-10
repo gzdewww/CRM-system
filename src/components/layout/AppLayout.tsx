@@ -4,6 +4,7 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 
 const { Sider, Content } = Layout;
 
+// без стилизации Layout занимает не всю высоту, фиксится только стилями
 const siderStyle: React.CSSProperties = {
   overflow: "auto",
   height: "100dvh",

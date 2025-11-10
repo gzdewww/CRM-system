@@ -1,3 +1,4 @@
+import useApp from "antd/es/app/useApp";
 import { useCallback, useEffect, useState } from "react";
 import { getTodos } from "../../api/api";
 import TodoForm from "../../components/todo/TodoForm/TodoForm";
@@ -10,14 +11,19 @@ export default function TodoListPage() {
   const [info, setInfo] = useState<TodoInfo>();
   const [activeTab, setActiveTab] = useState<keyof TodoInfo>("all");
 
-  const fetchTodos = useCallback(async (tab: keyof TodoInfo) => {
-    await getTodos(tab)
-      .then((res) => {
-        setTodos(res.data);
-        setInfo(res.info ?? { all: 0, inWork: 0, completed: 0 });
-      })
-      .catch(alert);
-  }, []);
+  const { message } = useApp();
+
+  const fetchTodos = useCallback(
+    async (tab: keyof TodoInfo) => {
+      await getTodos(tab)
+        .then((res) => {
+          setTodos(res.data);
+          setInfo(res.info ?? { all: 0, inWork: 0, completed: 0 });
+        })
+        .catch(message.error);
+    },
+    [message.error]
+  );
 
   useEffect(() => {
     fetchTodos(activeTab);

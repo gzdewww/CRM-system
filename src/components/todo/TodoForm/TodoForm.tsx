@@ -1,6 +1,7 @@
 // import Button from "../../UI/Button/Button";
 // import Input from "../../UI/Input/Input";
-import { Button, Flex, Form, Input, message } from "antd";
+import { Button, Flex, Form, Input } from "antd";
+import useApp from "antd/es/app/useApp";
 import { memo } from "react";
 import { addTodo } from "../../../api/api";
 
@@ -10,6 +11,8 @@ type Props = {
 
 export default memo(function TodoForm({ onAdd }: Props) {
   const [form] = Form.useForm();
+
+  const { message } = useApp();
 
   const handleSubmit = async () => {
     await addTodo(form.getFieldValue("task_input")).catch(message.error);
@@ -31,10 +34,15 @@ export default memo(function TodoForm({ onAdd }: Props) {
           hasFeedback
           validateDebounce={500}
           rules={[
-            { required: true, message: "Текст задачи не может быть пустым" },
+            {
+              required: true,
+              whitespace: true,
+              message: "Текст задачи не может быть пустым",
+            },
             {
               min: 2,
               max: 64,
+              transform: (value) => value.trim(),
               message: "Текст задачи должен быть от 2 до 64 символов",
             },
           ]}

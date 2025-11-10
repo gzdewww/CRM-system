@@ -1,4 +1,4 @@
-import { colors } from "../theme";
+import { colors } from "../theme/colors";
 import type { TodoInfo } from "../types/todo.types";
 
 const tabLabel: Record<keyof TodoInfo, string> = {

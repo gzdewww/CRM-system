@@ -1,10 +1,11 @@
-import { ConfigProvider, App as AntApp } from "antd";
+import { ConfigProvider } from "antd";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.scss";
 import AppLayout from "./components/layout/AppLayout";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import TodoListPage from "./pages/TodoListPage/TodoListPage";
-import { darkTheme, lightTheme } from "./theme";
+import { darkTheme, lightTheme } from "./theme/themeConfig";
+import { App as AntdApp } from "antd";
 
 const router = createBrowserRouter([
   {
@@ -27,9 +28,9 @@ const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
 function App() {
   return (
     <ConfigProvider theme={isDarkMode ? darkTheme : lightTheme}>
-      <AntApp>
+      <AntdApp>
         <RouterProvider router={router} />
-      </AntApp>
+      </AntdApp>
     </ConfigProvider>
   );
 }
