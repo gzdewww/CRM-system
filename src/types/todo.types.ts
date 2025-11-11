@@ -23,3 +23,7 @@ export interface TodoRequest {
   title?: string;
   isDone?: boolean; // изменение статуса задачи происходит через этот флаг
 }
+
+export interface TodoFormValues {
+  todo_title: string;
+}

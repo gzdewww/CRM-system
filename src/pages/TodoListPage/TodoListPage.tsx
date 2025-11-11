@@ -1,9 +1,9 @@
 import useApp from "antd/es/app/useApp";
 import { useCallback, useEffect, useState } from "react";
 import { getTodos } from "../../api/api";
-import TodoForm from "../../components/todo/TodoForm/TodoForm";
-import TodoList from "../../components/todo/TodoList/TodoList";
-import TodoTabs from "../../components/todo/TodoTabs/TodoTabs";
+import TodoForm from "../../components/todo/TodoForm";
+import TodoList from "../../components/todo/TodoList";
+import TodoTabs from "../../components/todo/TodoTabs";
 import type { Todo, TodoInfo } from "../../types/todo.types";
 
 export default function TodoListPage() {
@@ -15,14 +15,16 @@ export default function TodoListPage() {
 
   const fetchTodos = useCallback(
     async (tab: keyof TodoInfo) => {
-      await getTodos(tab)
-        .then((res) => {
+      try {
+        await getTodos(tab).then((res) => {
           setTodos(res.data);
           setInfo(res.info ?? { all: 0, inWork: 0, completed: 0 });
-        })
-        .catch(message.error);
+        });
+      } catch (error) {
+        message.error(`Произошла ошибка: ${error}`);
+      }
     },
-    [message.error]
+    [message]
   );
 
   useEffect(() => {
@@ -38,11 +40,11 @@ export default function TodoListPage() {
 
   return (
     <>
-      <TodoForm onAdd={() => fetchTodos(activeTab)} />
+      <TodoForm onAddTodo={fetchTodos} activeTab={activeTab} />
 
       <TodoTabs info={info} activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      <TodoList todos={todos} onUpdate={() => fetchTodos(activeTab)} />
+      <TodoList todos={todos} onUpdateTodo={fetchTodos} activeTab={activeTab} />
     </>
   );
 }

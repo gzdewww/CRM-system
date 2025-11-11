@@ -1,24 +1,28 @@
-// import Button from "../../UI/Button/Button";
-// import Input from "../../UI/Input/Input";
 import { Button, Flex, Form, Input } from "antd";
 import useApp from "antd/es/app/useApp";
 import { memo } from "react";
-import { addTodo } from "../../../api/api";
+import { addTodo } from "../../api/api";
+import { titleLength } from "../../constants/todo.const";
+import type { TodoFormValues, TodoInfo } from "../../types/todo.types";
 
-type Props = {
-  onAdd: () => void;
+type TodoFormProps = {
+  onAddTodo: (tab: keyof TodoInfo) => Promise<void>;
+  activeTab: keyof TodoInfo;
 };
 
-export default memo(function TodoForm({ onAdd }: Props) {
+export default memo(function TodoForm({ onAddTodo, activeTab }: TodoFormProps) {
   const [form] = Form.useForm();
-
   const { message } = useApp();
 
-  const handleSubmit = async () => {
-    await addTodo(form.getFieldValue("task_input")).catch(message.error);
-    onAdd();
-    form.resetFields();
-    message.success("Задача добавлена");
+  const handleSubmit = async (values: TodoFormValues) => {
+    try {
+      await addTodo(values.todo_title);
+      onAddTodo(activeTab);
+      form.resetFields();
+      message.success("Задача добавлена");
+    } catch (error) {
+      message.error(`Произошла ошибка: ${error}`);
+    }
   };
 
   return (
@@ -40,20 +44,20 @@ export default memo(function TodoForm({ onAdd }: Props) {
               message: "Текст задачи не может быть пустым",
             },
             {
-              min: 2,
-              max: 64,
+              min: titleLength.min,
+              max: titleLength.max,
               transform: (value) => value.trim(),
               message: "Текст задачи должен быть от 2 до 64 символов",
             },
           ]}
-          name="task_input"
+          name="todo_title"
           style={{ flexGrow: 1 }}
         >
           <Input
             showCount
             type="text"
-            placeholder="Task to be done..."
-            name="task"
+            placeholder="Задача к выполнению..."
+            name="todo"
             variant="underlined"
           />
         </Form.Item>

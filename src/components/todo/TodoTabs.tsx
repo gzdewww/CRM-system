@@ -1,9 +1,9 @@
 import { Badge, Space, Tabs } from "antd";
-import { tabColor, tabLabel } from "../../../constants/todo.const";
-import typedKeys from "../../../helpers/typedKeys";
-import type { TodoInfo } from "../../../types/todo.types";
+import { tabColor, tabLabel } from "../../constants/todo.const";
+import typedKeys from "../../helpers/typedKeys";
+import type { TodoInfo } from "../../types/todo.types";
 
-type Props = {
+type TodoTabsProps = {
   info?: TodoInfo;
   activeTab: string;
   setActiveTab: (tab: keyof TodoInfo) => void;
@@ -13,7 +13,7 @@ export default function TodoTabs({
   info = { all: 0, inWork: 0, completed: 0 },
   activeTab,
   setActiveTab,
-}: Props) {
+}: TodoTabsProps) {
   return (
     <Tabs
       moreIcon={null}

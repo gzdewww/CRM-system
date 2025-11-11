@@ -1,7 +1,7 @@
 import { type ThemeConfig } from "antd";
+import { colors } from "./colors";
 import { components } from "./components";
 import { token } from "./token";
-import { colors } from "./colors";
 
 export const lightTheme: ThemeConfig = {
   token: {

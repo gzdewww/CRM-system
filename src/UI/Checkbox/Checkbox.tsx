@@ -1,12 +1,12 @@
 import { BsCheckLg } from "react-icons/bs";
 import styles from "./Checkbox.module.scss";
 
-type Props = {
+type CheckboxProps = {
   isDone: boolean;
   onToggle: () => void;
 };
 
-export default function Checkbox({ isDone, onToggle }: Props) {
+export default function Checkbox({ isDone, onToggle }: CheckboxProps) {
   return (
     <label className={styles.checkbox}>
       <input

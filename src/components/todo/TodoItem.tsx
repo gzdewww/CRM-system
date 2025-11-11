@@ -17,20 +17,21 @@ import {
 import useApp from "antd/es/app/useApp";
 import { useForm } from "antd/es/form/Form";
 import { memo, useState } from "react";
-import { deleteTodo, updateTodo } from "../../../api/api";
-import type { Todo } from "../../../types/todo.types";
+import { deleteTodo, updateTodo } from "../../api/api";
+import type { Todo, TodoFormValues, TodoInfo } from "../../types/todo.types";
+import { titleLength } from "../../constants/todo.const";
 
-// занимает не всю ширину, не нашёл фикс без стилей в том виде, который я хочу
-const flexGrow1 = {
-  flexGrow: "1",
-};
-
-type Props = {
+type TodoItemProps = {
   todo: Todo;
-  onUpdate: () => void;
+  onUpdateTodo: (tab: keyof TodoInfo) => Promise<void>;
+  activeTab: keyof TodoInfo;
 };
 
-export default memo(function TodoItem({ todo, onUpdate }: Props) {
+export default memo(function TodoItem({
+  todo,
+  onUpdateTodo,
+  activeTab,
+}: TodoItemProps) {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [form] = useForm();
 
@@ -38,40 +39,50 @@ export default memo(function TodoItem({ todo, onUpdate }: Props) {
 
   const initial = todo.title;
 
-  const handleToggle = async () => {
-    await updateTodo(todo.id, { isDone: !todo.isDone }).catch(message.error);
-    onUpdate();
+  const handleToggleTodo = async () => {
+    try {
+      await updateTodo(todo.id, { isDone: !todo.isDone });
+      onUpdateTodo(activeTab);
+    } catch (error) {
+      message.error(`Произошла ошибка: ${error}`);
+    }
   };
 
-  const handleEdit = (event: React.MouseEvent) => {
+  const handleEditTodo = (event: React.MouseEvent) => {
     event.preventDefault();
     setIsEditing(true);
   };
 
-  const handleDelete = async () => {
-    await deleteTodo(todo.id).catch(message.error);
-    message.success("Задача удалена");
-    onUpdate();
+  const handleDeleteTodo = async () => {
+    try {
+      await deleteTodo(todo.id);
+      message.success("Задача удалена");
+      onUpdateTodo(activeTab);
+    } catch (error) {
+      message.error(`Произошла ошибка: ${error}`);
+    }
   };
 
-  const handleConfirm = async () => {
-    await updateTodo(todo.id, { title: form.getFieldValue("task") }).catch(
-      message.error
-    );
-    message.success("Задача обновлена");
-    onUpdate();
-    setIsEditing(false);
+  const handleConfirmEditing = async (values: TodoFormValues) => {
+    try {
+      await updateTodo(todo.id, { title: values.todo_title });
+      message.success("Задача обновлена");
+      onUpdateTodo(activeTab);
+      setIsEditing(false);
+    } catch (error) {
+      message.error(`Произошла ошибка: ${error}`);
+    }
   };
 
-  const handleCancel = () => {
-    form.setFieldsValue({ task: initial });
+  const handleCancelEditing = () => {
+    form.setFieldsValue({ todo_title: initial });
     setIsEditing(false);
   };
 
   return (
-    <Card size="small" variant="borderless" style={flexGrow1}>
+    <Card size="small" variant="borderless" style={{ flexGrow: 1 }}>
       <Flex gap="0.5rem" align="center">
-        <Checkbox checked={todo.isDone} onChange={handleToggle} />
+        <Checkbox checked={todo.isDone} onChange={handleToggleTodo} />
         <ConfigProvider
           theme={{ components: { Form: { itemMarginBottom: 0 } } }}
         >
@@ -79,12 +90,12 @@ export default memo(function TodoItem({ todo, onUpdate }: Props) {
             size="large"
             form={form}
             id={`todo-form-${todo.id.toString()}`}
-            onFinish={handleConfirm}
-            style={flexGrow1}
-            initialValues={{ task: todo.title }}
+            onFinish={handleConfirmEditing}
+            style={{ flexGrow: 1 }}
+            initialValues={{ todo_title: todo.title }}
           >
             <Form.Item
-              name="task"
+              name="todo_title"
               hasFeedback={isEditing}
               validateDebounce={500}
               rules={[
@@ -94,13 +105,18 @@ export default memo(function TodoItem({ todo, onUpdate }: Props) {
                   message: "Текст задачи не может быть пустым",
                 },
                 {
-                  min: 2,
-                  max: 64,
+                  min: titleLength.min,
+                  max: titleLength.max,
                   transform: (value) => value.trim(),
                   message: "Текст задачи должен быть от 2 до 64 символов",
                 },
               ]}
             >
+              {/* Вызывает Warning: [antd: Input] When Input is focused,
+              dynamic add or remove prefix / suffix will make it lose focus
+              caused by dom structure change.
+              Не думаю, что надо это править, так как изменение isEditing
+              должно вызывать потерю фокуса */}
               <Input
                 showCount={isEditing}
                 size="large"
@@ -123,7 +139,7 @@ export default memo(function TodoItem({ todo, onUpdate }: Props) {
               />
               <Button
                 type="primary"
-                onClick={handleCancel}
+                onClick={handleCancelEditing}
                 icon={<CloseOutlined />}
                 danger
               />
@@ -132,12 +148,12 @@ export default memo(function TodoItem({ todo, onUpdate }: Props) {
             <>
               <Button
                 type="primary"
-                onClick={handleEdit}
+                onClick={handleEditTodo}
                 icon={<EditOutlined />}
               />
               <Button
                 type="primary"
-                onClick={handleDelete}
+                onClick={handleDeleteTodo}
                 icon={<RestOutlined />}
                 danger
               />

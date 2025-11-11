@@ -16,9 +16,7 @@ const todoInstance = axios.create({
 export async function getTodos(
   filter?: keyof TodoInfo
 ): Promise<MetaResponse<Todo, TodoInfo>> {
-  return await todoInstance({ params: { filter } }).then(
-    (response) => response.data
-  );
+  return (await todoInstance.get("", { params: { filter } })).data;
 }
 
 export async function addTodo(title: string): Promise<Todo> {
@@ -27,13 +25,13 @@ export async function addTodo(title: string): Promise<Todo> {
     isDone: false,
   };
 
-  return todoInstance.post("", todo).then((response) => response.data);
+  return (await todoInstance.post("", todo)).data;
 }
 
-export async function deleteTodo(id: number): Promise<number> {
-  return todoInstance.delete(String(id)).then((response) => response.status);
+export async function deleteTodo(id: number): Promise<void> {
+  await todoInstance.delete(String(id));
 }
 
 export async function updateTodo(id: number, todo: TodoRequest): Promise<Todo> {
-  return todoInstance.put(String(id), todo).then((response) => response.data);
+  return (await todoInstance.put(String(id), todo)).data;
 }
