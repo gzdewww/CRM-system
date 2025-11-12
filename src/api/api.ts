@@ -10,7 +10,7 @@ const TODO_URL = import.meta.env.VITE_TODO_API_URL;
 
 const todoInstance = axios.create({
   baseURL: TODO_URL,
-  timeout: 1000,
+  timeout: 5000,
 });
 
 export async function getTodos(

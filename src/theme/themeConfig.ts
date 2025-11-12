@@ -6,8 +6,8 @@ import { token } from "./token";
 export const lightTheme: ThemeConfig = {
   token: {
     ...token,
-    colorBgBase: colors.light.bgBase,
-    colorTextBase: colors.light.textBase,
+    colorBgBase: colors.lightBase,
+    colorTextBase: colors.darkBase,
   },
   components,
 };
@@ -15,8 +15,8 @@ export const lightTheme: ThemeConfig = {
 export const darkTheme: ThemeConfig = {
   token: {
     ...token,
-    colorBgBase: colors.dark.bgBase,
-    colorTextBase: colors.dark.textBase,
+    colorBgBase: colors.darkBase,
+    colorTextBase: colors.lightBase,
   },
   components,
 };

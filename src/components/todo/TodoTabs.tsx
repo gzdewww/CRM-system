@@ -1,5 +1,5 @@
 import { Badge, Space, Tabs } from "antd";
-import { tabColor, tabLabel } from "../../constants/todo.const";
+import { TODO_TAB_COLOR, TODO_TAB_LABEL } from "../../constants/todo.const";
 import typedKeys from "../../helpers/typedKeys";
 import type { TodoInfo } from "../../types/todo.types";
 
@@ -23,8 +23,8 @@ export default function TodoTabs({
       items={typedKeys(info).map((tab) => ({
         label: (
           <Space>
-            <span>{tabLabel[tab]}</span>
-            <Badge count={info[tab]} color={tabColor[tab]} />
+            <span>{TODO_TAB_LABEL[tab]}</span>
+            <Badge count={info[tab]} color={TODO_TAB_COLOR[tab]} />
           </Space>
         ),
         key: tab,

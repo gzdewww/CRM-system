@@ -16,10 +16,11 @@ import {
 } from "antd";
 import useApp from "antd/es/app/useApp";
 import { useForm } from "antd/es/form/Form";
+import { isAxiosError } from "axios";
 import { memo, useState } from "react";
 import { deleteTodo, updateTodo } from "../../api/api";
+import { TODO_TITLE_LENGTH } from "../../constants/todo.const";
 import type { Todo, TodoFormValues, TodoInfo } from "../../types/todo.types";
-import { titleLength } from "../../constants/todo.const";
 
 type TodoItemProps = {
   todo: Todo;
@@ -44,7 +45,18 @@ export default memo(function TodoItem({
       await updateTodo(todo.id, { isDone: !todo.isDone });
       onUpdateTodo(activeTab);
     } catch (error) {
-      message.error(`Произошла ошибка: ${error}`);
+      if (isAxiosError(error)) {
+        if (error.response) {
+          message.error(`Error data: ${error.response.data}`);
+          message.error(`Error status: ${error.response.status}`);
+          message.error(`Error headers: ${error.response.headers}`);
+        } else if (error.request) {
+          message.error("Request error:", error.request);
+        }
+      }
+      if (error instanceof Error) {
+        message.error(`Error message: ${error.message}`);
+      }
     }
   };
 
@@ -59,7 +71,18 @@ export default memo(function TodoItem({
       message.success("Задача удалена");
       onUpdateTodo(activeTab);
     } catch (error) {
-      message.error(`Произошла ошибка: ${error}`);
+      if (isAxiosError(error)) {
+        if (error.response) {
+          message.error(`Error data: ${error.response.data}`);
+          message.error(`Error status: ${error.response.status}`);
+          message.error(`Error headers: ${error.response.headers}`);
+        } else if (error.request) {
+          message.error("Request error:", error.request);
+        }
+      }
+      if (error instanceof Error) {
+        message.error(`Error message: ${error.message}`);
+      }
     }
   };
 
@@ -70,7 +93,18 @@ export default memo(function TodoItem({
       onUpdateTodo(activeTab);
       setIsEditing(false);
     } catch (error) {
-      message.error(`Произошла ошибка: ${error}`);
+      if (isAxiosError(error)) {
+        if (error.response) {
+          message.error(`Error data: ${error.response.data}`);
+          message.error(`Error status: ${error.response.status}`);
+          message.error(`Error headers: ${error.response.headers}`);
+        } else if (error.request) {
+          message.error("Request error:", error.request);
+        }
+      }
+      if (error instanceof Error) {
+        message.error(`Error message: ${error.message}`);
+      }
     }
   };
 
@@ -105,8 +139,8 @@ export default memo(function TodoItem({
                   message: "Текст задачи не может быть пустым",
                 },
                 {
-                  min: titleLength.min,
-                  max: titleLength.max,
+                  min: TODO_TITLE_LENGTH.min,
+                  max: TODO_TITLE_LENGTH.max,
                   transform: (value) => value.trim(),
                   message: "Текст задачи должен быть от 2 до 64 символов",
                 },
@@ -130,6 +164,7 @@ export default memo(function TodoItem({
           {isEditing ? (
             <>
               <Button
+                title="Подтвердить"
                 variant="solid"
                 color="green"
                 disabled={!isEditing}
@@ -138,6 +173,7 @@ export default memo(function TodoItem({
                 form={`todo-form-${todo.id.toString()}`}
               />
               <Button
+                title="Отмена"
                 type="primary"
                 onClick={handleCancelEditing}
                 icon={<CloseOutlined />}
@@ -147,11 +183,13 @@ export default memo(function TodoItem({
           ) : (
             <>
               <Button
+                title="Редактировать"
                 type="primary"
                 onClick={handleEditTodo}
                 icon={<EditOutlined />}
               />
               <Button
+                title="Удалить"
                 type="primary"
                 onClick={handleDeleteTodo}
                 icon={<RestOutlined />}

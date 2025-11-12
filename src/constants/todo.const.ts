@@ -1,6 +1,12 @@
 import { colors } from "../theme/colors";
 import type { TodoInfo } from "../types/todo.types";
 
+const TODO_TAB_DEFAULT_STATE = {
+  all: 0,
+  inWork: 0,
+  completed: 0,
+} as const;
+
 const TODO_TAB_LABEL: Record<keyof TodoInfo, string> = {
   all: "Все",
   inWork: "Активные",
@@ -18,4 +24,9 @@ const TODO_TITLE_LENGTH = {
   max: 64,
 };
 
-export { TODO_TAB_LABEL as tabLabel, TODO_TAB_COLOR as tabColor, TODO_TITLE_LENGTH as titleLength };
+export {
+  TODO_TAB_DEFAULT_STATE,
+  TODO_TAB_COLOR,
+  TODO_TAB_LABEL,
+  TODO_TITLE_LENGTH,
+};
