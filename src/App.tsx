@@ -1,19 +1,37 @@
+import { ConfigProvider } from "antd";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.scss";
-import TodoListPage from "./pages/TodoListPage";
+import AppLayout from "./components/layout/AppLayout";
+import ProfilePage from "./pages/ProfilePage/ProfilePage";
+import TodoListPage from "./pages/TodoListPage/TodoListPage";
+import { darkTheme, lightTheme } from "./theme/themeConfig";
+import { App as AntdApp } from "antd";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <TodoListPage />,
+    Component: AppLayout,
+    children: [
+      {
+        path: "/",
+        Component: TodoListPage,
+      },
+      {
+        path: "/profile",
+        Component: ProfilePage,
+      },
+    ],
   },
 ]);
 
+const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
 function App() {
   return (
-    <>
-      <RouterProvider router={router} />
-    </>
+    <ConfigProvider theme={isDarkMode ? darkTheme : lightTheme}>
+      <AntdApp>
+        <RouterProvider router={router} />
+      </AntdApp>
+    </ConfigProvider>
   );
 }
 

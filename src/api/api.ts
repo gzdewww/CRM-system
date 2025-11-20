@@ -1,19 +1,22 @@
+import axios from "axios";
 import type {
   MetaResponse,
   Todo,
   TodoInfo,
   TodoRequest,
-} from "../types/TodoTypes";
+} from "../types/todo.types";
 
 const TODO_URL = import.meta.env.VITE_TODO_API_URL;
+
+const todoInstance = axios.create({
+  baseURL: TODO_URL,
+  timeout: 5000,
+});
 
 export async function getTodos(
   filter?: keyof TodoInfo
 ): Promise<MetaResponse<Todo, TodoInfo>> {
-  const response = await fetch(
-    `${TODO_URL}${filter ? `?filter=${filter}` : ""}`
-  );
-  return await response.json();
+  return (await todoInstance.get("", { params: { filter } })).data;
 }
 
 export async function addTodo(title: string): Promise<Todo> {
@@ -22,30 +25,13 @@ export async function addTodo(title: string): Promise<Todo> {
     isDone: false,
   };
 
-  const response = await fetch(TODO_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(todo),
-  });
-  return await response.json();
+  return (await todoInstance.post("", todo)).data;
 }
 
-export async function deleteTodo(id: number): Promise<number> {
-  const response = await fetch(`${TODO_URL}/${id}`, {
-    method: "DELETE",
-  });
-  return response.status;
+export async function deleteTodo(id: number): Promise<void> {
+  await todoInstance.delete(String(id));
 }
 
 export async function updateTodo(id: number, todo: TodoRequest): Promise<Todo> {
-  const response = await fetch(`${TODO_URL}/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(todo),
-  });
-  return await response.json();
+  return (await todoInstance.put(String(id), todo)).data;
 }

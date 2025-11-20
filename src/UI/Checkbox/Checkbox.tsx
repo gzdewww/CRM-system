@@ -1,12 +1,12 @@
-import { BsCheckLg } from "react-icons/bs";
+import { CheckOutlined } from "@ant-design/icons";
 import styles from "./Checkbox.module.scss";
 
-type Props = {
+type CheckboxProps = {
   isDone: boolean;
   onToggle: () => void;
 };
 
-export default function Checkbox({ isDone, onToggle }: Props) {
+export default function Checkbox({ isDone, onToggle }: CheckboxProps) {
   return (
     <label className={styles.checkbox}>
       <input
@@ -15,9 +15,9 @@ export default function Checkbox({ isDone, onToggle }: Props) {
         checked={isDone}
         onChange={onToggle}
         aria-checked={isDone}
-        name="Task checkbox"
+        name="checkbox"
       />
-      <BsCheckLg className={styles.checkbox__icon} />
+      <CheckOutlined className={styles.checkbox__icon} />
     </label>
   );
 }
