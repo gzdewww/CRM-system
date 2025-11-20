@@ -1,0 +1,65 @@
+.input {
+  flex-grow: 1;
+  position: relative;
+  padding: 1rem 0;
+  &__textfield {
+    cursor: text;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+
+    font: inherit;
+
+    box-sizing: border-box;
+    background: none;
+    border: solid 1px transparent;
+    outline: none;
+    transition: border-bottom-color var(--transition), color var(--transition);
+
+    &:hover:not(:read-only),
+    &:focus-visible:not(:read-only) {
+      border-bottom-color: currentColor;
+    }
+
+    &:disabled {
+      color: var(--color-secondary);
+      cursor: inherit;
+      text-decoration: line-through;
+    }
+
+    &--error {
+      color: var(--color-accent-2);
+    }
+  }
+
+  &__error {
+    &[data-error="false"] {
+      display: none;
+    }
+    position: absolute;
+    bottom: 0.125rem;
+    height: 1rem;
+    max-width: 100%;
+    margin: 0;
+    color: var(--color-accent-2);
+
+    text-align: left;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    animation: slideIn var(--transition) forwards;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
