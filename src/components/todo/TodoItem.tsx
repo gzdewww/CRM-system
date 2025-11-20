@@ -48,8 +48,6 @@ export default memo(function TodoItem({
       if (isAxiosError(error)) {
         if (error.response) {
           message.error(`Error data: ${error.response.data}`);
-          message.error(`Error status: ${error.response.status}`);
-          message.error(`Error headers: ${error.response.headers}`);
         } else if (error.request) {
           message.error("Request error:", error.request);
         }
@@ -74,8 +72,6 @@ export default memo(function TodoItem({
       if (isAxiosError(error)) {
         if (error.response) {
           message.error(`Error data: ${error.response.data}`);
-          message.error(`Error status: ${error.response.status}`);
-          message.error(`Error headers: ${error.response.headers}`);
         } else if (error.request) {
           message.error("Request error:", error.request);
         }
@@ -96,8 +92,6 @@ export default memo(function TodoItem({
       if (isAxiosError(error)) {
         if (error.response) {
           message.error(`Error data: ${error.response.data}`);
-          message.error(`Error status: ${error.response.status}`);
-          message.error(`Error headers: ${error.response.headers}`);
         } else if (error.request) {
           message.error("Request error:", error.request);
         }
