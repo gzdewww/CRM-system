@@ -187,12 +187,15 @@ const authSlice = createSlice({
     });
 
     // SIGN OUT
+    builder.addCase(signOutThunk.pending, (state) => {
+      state.isLoading = true;
+    })
     builder.addCase(signOutThunk.fulfilled, (state) => {
       state.isAuth = false;
       state.token = null;
-      state.isLoading = false;
       state.isInitialized = true;
       state.error = null;
+      state.isLoading = false;
 
       removeRefreshToken();
     });

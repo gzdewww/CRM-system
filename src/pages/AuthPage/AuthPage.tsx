@@ -19,16 +19,33 @@ const { Title, Text } = Typography;
 
 export default function AuthPage() {
   const error = useAppSelector((state) => state.auth.error);
+  const isAuth = useAppSelector((state) => state.auth.isAuth);
+  const isLoading = useAppSelector((state) => state.auth.isLoading);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { message } = useApp();
+  const { message, notification } = useApp();
 
   useEffect(() => {
     if (error) {
       message.error(error);
     }
-  }, [error, message]);
+
+    if (isAuth && !isLoading) {
+      const btn = (
+        <Button type="primary" size="small">
+          <Link to="/">На главную</Link>
+        </Button>
+      );
+
+      notification.open({
+        message: "Похоже, вы уже авторизованы",
+        description: "Перейти на главную страницу?",
+        duration: 10,
+        btn,
+      });
+    }
+  }, [error, message, notification, isAuth]);
 
   const handleSubmitLogin = async (values: AuthData) => {
     const response = await dispatch(signInThunk(values));

@@ -61,6 +61,9 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     //GET PROFILE
+    builder.addCase(getProfileThunk.pending, (state) => {
+      state.isLoading = true;
+    });
     builder.addCase(getProfileThunk.fulfilled, (state, action) => {
       state.profile = action.payload ?? null;
       state.isLoading = false;
@@ -71,8 +74,10 @@ const userSlice = createSlice({
 
       console.log(action.payload);
     });
-    builder.addCase(getProfileThunk.pending, (state) => {
-      state.isLoading = true;
+
+    //SIGN OUT
+    builder.addCase(signOutThunk.fulfilled, (state) => {
+      state.profile = null;
     });
   },
 });
