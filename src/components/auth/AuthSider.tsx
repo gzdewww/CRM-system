@@ -7,24 +7,24 @@ export default function AuthSider() {
         <div className={styles.sider__background} />
         <div className={styles.sider__caption}>
           <img
-            src="img/auth_caption.png"
+            src="/img/auth_caption.png"
             alt=""
             className={styles["sider__caption-left"]}
           />
           <img
-            src="img/auth_caption.png"
+            src="/img/auth_caption.png"
             alt=""
             className={styles["sider__caption-right"]}
           />
         </div>
         <img
-          src="img/auth_planet.png"
+          src="/img/auth_planet.png"
           alt=""
           className={styles.sider__planet}
         />
         <div className={styles.sider__circle} />
         <img
-          src="svg/auth_sider_centre.svg"
+          src="/svg/auth_sider_centre.svg"
           alt=""
           className={styles.sider__image}
         />
