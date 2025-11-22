@@ -1,6 +1,7 @@
 import { UnorderedListOutlined, UserOutlined } from "@ant-design/icons";
-import { Layout, Menu } from "antd";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { App as AntdApp, ConfigProvider, Layout, Menu } from "antd";
+import { Link, Outlet } from "react-router-dom";
+import { darkTheme, lightTheme } from "../../theme/todo/themeConfig";
 
 const { Sider, Content } = Layout;
 
@@ -20,32 +21,36 @@ const contentStyle: React.CSSProperties = {
   margin: "0 auto",
 };
 
-export default function AppLayout() {
-  const location = useLocation();
+const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
+export default function AppLayout() {
   return (
-    <Layout>
-      <Sider breakpoint="md" theme="light" style={siderStyle}>
-        <Menu
-          mode="inline"
-          defaultSelectedKeys={[location.pathname]}
-          items={[
-            {
-              key: "/",
-              icon: <UnorderedListOutlined />,
-              label: <Link to="/">Список задач</Link>,
-            },
-            {
-              key: "/profile",
-              icon: <UserOutlined />,
-              label: <Link to="/profile">Профиль</Link>,
-            },
-          ]}
-        />
-      </Sider>
-      <Content style={contentStyle}>
-        <Outlet />
-      </Content>
-    </Layout>
+    <ConfigProvider theme={isDarkMode ? darkTheme : lightTheme}>
+      <AntdApp>
+        <Layout>
+          <Sider breakpoint="md" theme="light" style={siderStyle}>
+            <Menu
+              mode="inline"
+              defaultSelectedKeys={[location.pathname]}
+              items={[
+                {
+                  key: "/",
+                  icon: <UnorderedListOutlined />,
+                  label: <Link to="/">Список задач</Link>,
+                },
+                {
+                  key: "/profile",
+                  icon: <UserOutlined />,
+                  label: <Link to="/profile">Профиль</Link>,
+                },
+              ]}
+            />
+          </Sider>
+          <Content style={contentStyle}>
+            <Outlet />
+          </Content>
+        </Layout>
+      </AntdApp>
+    </ConfigProvider>
   );
 }

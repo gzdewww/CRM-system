@@ -1,25 +1,21 @@
 import { Badge, Space, Tabs } from "antd";
 import { TODO_TAB_COLOR, TODO_TAB_LABEL } from "../../constants/todo.const";
 import typedKeys from "../../helpers/typedKeys";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import { setActiveTab } from "../../store/slices/todosSlice";
 import type { TodoInfo } from "../../types/todo.types";
 
-type TodoTabsProps = {
-  info?: TodoInfo;
-  activeTab: string;
-  setActiveTab: (tab: keyof TodoInfo) => void;
-};
+export default function TodoTabs() {
+  const activeTab = useAppSelector((state) => state.todos.activeTab);
+  const info = useAppSelector((state) => state.todos.info);
+  const dispatch = useAppDispatch();
 
-export default function TodoTabs({
-  info = { all: 0, inWork: 0, completed: 0 },
-  activeTab,
-  setActiveTab,
-}: TodoTabsProps) {
   return (
     <Tabs
       moreIcon={null}
       centered
       activeKey={activeTab}
-      onChange={(key) => setActiveTab(key as keyof TodoInfo)}
+      onChange={(key) => dispatch(setActiveTab(key as keyof TodoInfo))}
       items={typedKeys(info).map((tab) => ({
         label: (
           <Space>

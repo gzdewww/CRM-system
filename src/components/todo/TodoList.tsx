@@ -1,30 +1,23 @@
 import { List } from "antd";
 import { memo } from "react";
-import type { Todo, TodoInfo } from "../../types/todo.types";
+import type { Todo } from "../../types/todo.types";
 import TodoItem from "./TodoItem";
+import { useAppSelector } from "../../hooks/reduxHooks";
 
 type TodoListProps = {
-  todos: Todo[];
-  onUpdateTodo: (tab: keyof TodoInfo) => Promise<void>;
-  activeTab: keyof TodoInfo;
+  onUpdateTodo: () => Promise<void>;
 };
 
-export default memo(function TodoList({
-  todos,
-  onUpdateTodo,
-  activeTab,
-}: TodoListProps) {
+export default memo(function TodoList({ onUpdateTodo }: TodoListProps) {
+  const todos: Todo[] = useAppSelector((state) => state.todos.todos);
+
   return (
     <List
       split={false}
       dataSource={todos}
       renderItem={(todo) => (
         <List.Item key={todo.id}>
-          <TodoItem
-            todo={todo}
-            onUpdateTodo={onUpdateTodo}
-            activeTab={activeTab}
-          />
+          <TodoItem todo={todo} onUpdateTodo={onUpdateTodo} />
         </List.Item>
       )}
     />

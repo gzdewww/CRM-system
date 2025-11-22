@@ -18,21 +18,16 @@ import useApp from "antd/es/app/useApp";
 import { useForm } from "antd/es/form/Form";
 import { isAxiosError } from "axios";
 import { memo, useState } from "react";
-import { deleteTodo, updateTodo } from "../../api/api";
+import { deleteTodo, updateTodo } from "../../api/todo.api";
 import { TODO_TITLE_LENGTH } from "../../constants/todo.const";
-import type { Todo, TodoFormValues, TodoInfo } from "../../types/todo.types";
+import type { Todo, TodoFormValues } from "../../types/todo.types";
 
 type TodoItemProps = {
   todo: Todo;
-  onUpdateTodo: (tab: keyof TodoInfo) => Promise<void>;
-  activeTab: keyof TodoInfo;
+  onUpdateTodo: () => Promise<void>;
 };
 
-export default memo(function TodoItem({
-  todo,
-  onUpdateTodo,
-  activeTab,
-}: TodoItemProps) {
+export default memo(function TodoItem({ todo, onUpdateTodo }: TodoItemProps) {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [form] = useForm();
 
@@ -43,7 +38,7 @@ export default memo(function TodoItem({
   const handleToggleTodo = async () => {
     try {
       await updateTodo(todo.id, { isDone: !todo.isDone });
-      onUpdateTodo(activeTab);
+      onUpdateTodo();
     } catch (error) {
       if (isAxiosError(error)) {
         if (error.response) {
@@ -67,7 +62,7 @@ export default memo(function TodoItem({
     try {
       await deleteTodo(todo.id);
       message.success("Задача удалена");
-      onUpdateTodo(activeTab);
+      onUpdateTodo();
     } catch (error) {
       if (isAxiosError(error)) {
         if (error.response) {
@@ -86,7 +81,7 @@ export default memo(function TodoItem({
     try {
       await updateTodo(todo.id, { title: values.todo_title });
       message.success("Задача обновлена");
-      onUpdateTodo(activeTab);
+      onUpdateTodo();
       setIsEditing(false);
     } catch (error) {
       if (isAxiosError(error)) {

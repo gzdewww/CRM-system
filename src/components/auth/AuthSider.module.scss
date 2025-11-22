@@ -1,0 +1,142 @@
+.sider {
+  flex: 1 0 800px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffe6c9;
+  color: #73114b;
+
+  &__background {
+    position: absolute;
+    width: 600px;
+    aspect-ratio: 1/1;
+    transform: translateY(-130px);
+    object-fit: cover;
+    border-radius: 50%;
+    background-color: #f6d5bb;
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out forwards;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+
+      background: transparent;
+      // PARTICLES
+      box-shadow: 651px 625px 0 1px #1b1633, 488px 15px 0 0px #1b1633,
+        -489px -186px 0 3px #1b1633, -45px 588px 0 -2px #b44538,
+        470px -662px 0 0px #1b1633, -345px 538px 0 -1px #b44538,
+        123px -274px 0 2px #b44538, 221px -78px 0 -2px #b44538,
+        -76px -144px 0 1px #1b1633, 36px 656px 0 2px #1b1633,
+        37px 138px 0 3px #1b1633, 194px 659px 0 -1px #1b1633,
+        283px 695px 0 2px #b44538, -609px -664px 0 -1px #b44538,
+        468px -131px 0 -2px #b44538, 54px 114px 0 -2px #b44538,
+        95px -586px 0 2px #b44538, 543px 202px 0 2px #1b1633,
+        314px 321px 0 -1px #b44538, 508px 373px 0 1px #1b1633,
+        -690px -162px 0 -1px #1b1633, 630px -574px 0 3px #b44538,
+        -418px -189px 0 -3px #b44538, -647px 580px 0 -1px #b44538,
+        -86px -552px 0 0px #1b1633, -660px -640px 0 -2px #b44538,
+        -105px 288px 0 1px #b44538, -123px -382px 0 -2px #b44538,
+        161px 486px 0 2px #b44538, -605px 454px 0 -1px #b44538,
+        -401px -188px 0 2px #b44538, -199px -122px 0 2px #1b1633,
+        -345px 484px 0 -2px #b44538, 545px 470px 0 -3px #1b1633,
+        -700px 524px 0 0px #1b1633, 282px 472px 0 2px #b44538,
+        -603px -150px 0 3px #b44538, 258px 230px 0 1px #1b1633,
+        350px -373px 0 2px #1b1633, -682px 165px 0 1px #b44538,
+        -441px -542px 0 0px #b44538, -567px -286px 0 3px #b44538,
+        -632px 305px 0 -1px #1b1633, 11px 272px 0 2px #1b1633,
+        237px -193px 0 -1px #1b1633, 117px 162px 0 -2px #1b1633,
+        -598px 633px 0 3px #1b1633, -218px 455px 0 2px #1b1633,
+        444px 173px 0 -2px #1b1633, -155px -2px 0 3px #b44538;
+    }
+  }
+
+  &__image {
+    animation: slideTop 1s cubic-bezier(0.86, 0, 0.07, 1) forwards;
+  }
+
+  &__caption {
+    display: flex;
+    gap: 300px;
+    justify-content: center;
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-280px);
+
+    &-left {
+      transform: scaleX(-1);
+      opacity: 0;
+      animation: fadeIn 1s ease-out 1s forwards;
+    }
+
+    &-right {
+      opacity: 0;
+      animation: fadeIn 1s ease-out 1.3s forwards;
+      transform: translateY(20px);
+    }
+  }
+
+  &__planet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-30%, -30%);
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out 0.3s forwards;
+  }
+
+  &__circle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    opacity: 0;
+    width: 300px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    background: linear-gradient(to right, #860752, #ffd9a8);
+    transform: translate(40%, 50%);
+    
+    opacity: 0.4;
+  }
+
+  &__title,
+  &__subtitle {
+    animation: slideBottom 1s cubic-bezier(0.86, 0, 0.07, 1) forwards;
+  }
+}
+
+@keyframes slideTop {
+  from {
+    transform: translateY(-3rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideBottom {
+  from {
+    transform: translateY(3rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
