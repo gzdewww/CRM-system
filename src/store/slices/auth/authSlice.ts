@@ -33,7 +33,6 @@ export interface AuthState {
   isAuth: boolean;
   token: AsyncParticle<Token>;
   rememberMe: boolean;
-  message: string | null;
 }
 
 export const signInThunk = createAsyncThunk<
