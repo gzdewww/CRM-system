@@ -26,11 +26,11 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: "/",
+        index: true,
         Component: TodoListPage,
       },
       {
-        path: "/profile",
+        path: "profile",
         Component: ProfilePage,
       },
     ],
