@@ -18,7 +18,7 @@ import useApp from "antd/es/app/useApp";
 import { useForm } from "antd/es/form/Form";
 import { isAxiosError } from "axios";
 import { memo, useState } from "react";
-import { deleteTodo, updateTodo } from "../../api/todo.api";
+import { deleteTodo, updateTodo } from "../../api/todoAPI";
 import { TODO_TITLE_LENGTH } from "../../constants/todo.const";
 import type { Todo, TodoFormValues } from "../../types/todo.types";
 

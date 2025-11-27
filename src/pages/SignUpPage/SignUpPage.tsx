@@ -1,31 +1,17 @@
 import { Button, Flex, Form, Input, Space, Typography } from "antd";
-import useApp from "antd/es/app/useApp";
-import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
-import { signUpThunk } from "../../store/slices/authSlice";
+import { useAppDispatch } from "../../hooks/reduxHooks";
+import { signUpThunk } from "../../store/slices/auth/authSlice";
 import type { UserRegistration } from "../../types/auth.types";
 const { Title, Text } = Typography;
 
 export default function RegistrationPage() {
-  const error = useAppSelector((state) => state.auth.error);
-  const authMessage = useAppSelector((state) => state.auth.message);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { message } = useApp();
-  useEffect(() => {
-    if (error) {
-      message.error(error);
-    }
-    if (authMessage) {
-      message.success(authMessage);
-    }
-  }, [error, authMessage, message]);
-
   const handleSubmitRegistration = async (values: UserRegistration) => {
     const response = await dispatch(signUpThunk(values));
-    if (response.type === "auth/signUp/fulfilled") {
+    if (response.meta.requestStatus === "fulfilled") {
       navigate("/auth/login", { replace: true });
     }
   };
@@ -56,9 +42,12 @@ export default function RegistrationPage() {
             {
               min: 2,
               max: 60,
+              message: "Логин должен содержать от 2 до 60 символов ",
+            },
+            {
               pattern: /^[a-zA-Z0-9_.-]+$/,
               message:
-                "Логин должен содержать от 2 до 60 латинских символов или цифр (допускаются точки, дефисы и подчеркивания)",
+                "Логин должен содержать только латинские буквы, цифры, точку, дефис и подчеркивание",
             },
           ]}
         >

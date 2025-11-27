@@ -12,27 +12,23 @@ import useApp from "antd/es/app/useApp";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
-import { setRememberMe, signInThunk } from "../../store/slices/authSlice";
+import { selectToken } from "../../store/slices/auth/authSelectors";
+import { setRememberMe, signInThunk } from "../../store/slices/auth/authSlice";
 import type { AuthData } from "../../types/auth.types";
 
 const { Title, Text } = Typography;
 
 export default function AuthPage() {
-  const error = useAppSelector((state) => state.auth.error);
+  const { status } = useAppSelector(selectToken);
   const isAuth = useAppSelector((state) => state.auth.isAuth);
-  const isLoading = useAppSelector((state) => state.auth.isLoading);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { message, notification } = useApp();
+  const { notification } = useApp();
 
   useEffect(() => {
-    if (error) {
-      message.error(error);
-    }
-
-    if (isAuth && !isLoading) {
-      const btn = (
+    if (!status.isLoadingOrIdle && isAuth) {
+      const actions = (
         <Button type="primary" size="small">
           <Link to="/">На главную</Link>
         </Button>
@@ -42,10 +38,10 @@ export default function AuthPage() {
         message: "Похоже, вы уже авторизованы",
         description: "Перейти на главную страницу?",
         duration: 10,
-        btn,
+        actions,
       });
     }
-  }, [error, message, notification, isAuth]);
+  }, [status, isAuth, notification]);
 
   const handleSubmitLogin = async (values: AuthData) => {
     const response = await dispatch(signInThunk(values));
@@ -54,7 +50,7 @@ export default function AuthPage() {
     }
   };
 
-  const handleToggleRememerMe = (event: CheckboxChangeEvent) => {
+  const handleToggleRememberMe = (event: CheckboxChangeEvent) => {
     dispatch(setRememberMe(event.target.checked));
   };
 
@@ -63,7 +59,7 @@ export default function AuthPage() {
       vertical
       align="center"
       justify="space-around"
-      style={{ height: "100%" }}
+      style={{ height: "100%"}}
     >
       <Space direction="vertical">
         <img src="/svg/auth_logo.svg" alt="" style={{ alignSelf: "start" }} />
@@ -85,9 +81,12 @@ export default function AuthPage() {
             {
               min: 2,
               max: 60,
+              message: "Логин должен содержать от 2 до 60 символов ",
+            },
+            {
               pattern: /^[a-zA-Z0-9_.-]+$/,
               message:
-                "Логин должен содержать от 2 до 60 латинских символов или цифр (допускаются точки, дефисы и подчеркивания)",
+                "Логин должен содержать только латинские буквы, цифры, точку, дефис и подчеркивание",
             },
           ]}
         >
@@ -109,7 +108,9 @@ export default function AuthPage() {
         </Form.Item>
         <Form.Item name="remember" valuePropName="checked">
           <Flex justify="space-between">
-            <Checkbox onChange={handleToggleRememerMe}>Запомнить меня</Checkbox>
+            <Checkbox onChange={handleToggleRememberMe}>
+              Запомнить меня
+            </Checkbox>
             <Link to="/auth/restore">Забыли пароль?</Link>
           </Flex>
         </Form.Item>

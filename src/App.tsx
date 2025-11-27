@@ -11,10 +11,11 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { useAppDispatch, useAppSelector } from "./hooks/reduxHooks";
 import AuthPage from "./pages/AuthPage/AuthPage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
-import RegistrationPage from "./pages/RegistrationPage/RegistrationPage";
-import TodoListPage from "./pages/TodoListPage/TodoListPage";
-import { refreshThunk } from "./store/slices/authSlice";
+import RegistrationPage from "./pages/SignUpPage/SignUpPage";
 import RestorePasswordPage from "./pages/RestorePasswordPage/RestorePasswordPage";
+import TodoListPage from "./pages/TodoListPage/TodoListPage";
+import { selectToken } from "./store/slices/auth/authSelectors";
+import { refreshThunk } from "./store/slices/auth/authSlice";
 
 const router = createBrowserRouter([
   {
@@ -60,20 +61,22 @@ const router = createBrowserRouter([
 
 function App() {
   const dispatch = useAppDispatch();
-  const token = useAppSelector((state) => state.auth.token);
-  const isInitialized = useAppSelector((state) => state.auth.isInitialized);
+  const {
+    data: token,
+    status: { isLoaded },
+  } = useAppSelector(selectToken);
 
   useEffect(() => {
-    if (!isInitialized || (token?.refreshToken && !token.accessToken)) {
-      try {
-        dispatch(refreshThunk());
-      } catch (error) {
-        console.log(error);
-      }
+    if (!isLoaded || (token?.refreshToken && !token.accessToken)) {
+      dispatch(refreshThunk());
     }
-  }, [dispatch, token, isInitialized]);
+  }, [dispatch, token, isLoaded]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+    </>
+  );
 }
 
 export default App;

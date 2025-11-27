@@ -1,26 +1,27 @@
 import { Flex, Spin } from "antd";
 import { useEffect, type ReactNode } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../hooks/reduxHooks";
+import { selectToken } from "../store/slices/auth/authSelectors";
 
 interface ProtectedRouteProps {
   children: ReactNode;
 }
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const {
+    status: { isLoadedOrError },
+  } = useAppSelector(selectToken);
   const isAuth = useAppSelector((state) => state.auth.isAuth);
-  const isLoading = useAppSelector((state) => state.auth.isLoading);
-  const isInitialized = useAppSelector((state) => state.auth.isInitialized);
   const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
-    if (!isAuth && !isLoading && isInitialized) {
+    if (!isAuth && isLoadedOrError) {
       navigate("/auth/login", { replace: true });
     }
-  }, [isAuth, isInitialized, isLoading, navigate, location]);
+  }, [navigate, isAuth, isLoadedOrError]);
 
-  if (isLoading || !isInitialized || !isAuth) {
+  if (!isLoadedOrError) {
     return (
       <Flex justify="center" align="center" style={{ height: "100dvh" }}>
         <Spin size="large" />

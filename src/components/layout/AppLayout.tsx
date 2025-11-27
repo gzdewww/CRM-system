@@ -2,6 +2,7 @@ import { UnorderedListOutlined, UserOutlined } from "@ant-design/icons";
 import { App as AntdApp, ConfigProvider, Layout, Menu } from "antd";
 import { Link, Outlet } from "react-router-dom";
 import { darkTheme, lightTheme } from "../../theme/todo/themeConfig";
+import { MessageListener } from "../MessageListener";
 
 const { Sider, Content } = Layout;
 
@@ -27,6 +28,7 @@ export default function AppLayout() {
   return (
     <ConfigProvider theme={isDarkMode ? darkTheme : lightTheme}>
       <AntdApp>
+        <MessageListener />
         <Layout>
           <Sider breakpoint="md" theme="light" style={siderStyle}>
             <Menu

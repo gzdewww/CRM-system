@@ -1,5 +1,5 @@
 .sider {
-  flex: 1 0 800px;
+  flex: 1 1 800px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -10,7 +10,7 @@
 
   &__background {
     position: absolute;
-    width: 600px;
+    width: 50%;
     aspect-ratio: 1/1;
     transform: translateY(-130px);
     object-fit: cover;
@@ -60,32 +60,39 @@
 
   &__image {
     animation: slideTop 1s cubic-bezier(0.86, 0, 0.07, 1) forwards;
+    width: 40%;
   }
 
   &__caption {
     display: flex;
-    gap: 300px;
-    justify-content: center;
-    width: 100%;
+    width: 50%;
+    justify-content: space-between;
     position: absolute;
-    top: 50%;
-    transform: translateY(-280px);
+    top: 40%;
+    transform: translateY(-250%);
 
     &-left {
-      transform: scaleX(-1);
       opacity: 0;
       animation: fadeIn 1s ease-out 1s forwards;
+      transform: scaleX(-1);
+      width: 25%;
     }
 
     &-right {
       opacity: 0;
       animation: fadeIn 1s ease-out 1.3s forwards;
       transform: translateY(20px);
+      width: 25%;
+    }
+
+    @media screen and (max-width: 800px) {
+      display: none;
     }
   }
 
   &__planet {
     position: absolute;
+    width: 25%;
     top: 0;
     left: 0;
     transform: translate(-30%, -30%);
@@ -98,12 +105,12 @@
     bottom: 0;
     right: 0;
     opacity: 0;
-    width: 300px;
+    width: 25%;
     aspect-ratio: 1/1;
     border-radius: 50%;
     background: linear-gradient(to right, #860752, #ffd9a8);
     transform: translate(40%, 50%);
-    
+
     opacity: 0.4;
   }
 

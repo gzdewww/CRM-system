@@ -2,7 +2,7 @@ import { Button, Flex, Form, Input } from "antd";
 import useApp from "antd/es/app/useApp";
 import { isAxiosError } from "axios";
 import { memo } from "react";
-import { addTodo } from "../../api/todo.api";
+import { addTodo } from "../../api/todoAPI";
 import { TODO_TITLE_LENGTH } from "../../constants/todo.const";
 import type { TodoFormValues } from "../../types/todo.types";
 

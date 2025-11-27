@@ -1,8 +1,11 @@
 const REFRESH_TOKEN_KEY = "refreshToken";
 
 const getRefreshToken = (): string | null => {
-  return localStorage.getItem(REFRESH_TOKEN_KEY) || sessionStorage.getItem(REFRESH_TOKEN_KEY);
-}
+  return (
+    sessionStorage.getItem(REFRESH_TOKEN_KEY) ||
+    localStorage.getItem(REFRESH_TOKEN_KEY)
+  );
+};
 
 const setRefreshToken = (refreshToken: string, rememberMe: boolean): void => {
   if (!refreshToken) {

@@ -1,4 +1,3 @@
-// pages/ProfilePage/ProfilePage.tsx
 import {
   CalendarOutlined,
   IdcardOutlined,
@@ -9,33 +8,27 @@ import {
 } from "@ant-design/icons";
 import { Button, Card, Descriptions, Space, Spin, Tag, Typography } from "antd";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
-import { refreshThunk } from "../../store/slices/authSlice";
-import { getProfileThunk, signOutThunk } from "../../store/slices/userSlice";
+import { selectProfile } from "../../store/slices/user/userSelectors";
+import {
+  getProfileThunk,
+  signOutThunk,
+} from "../../store/slices/user/userSlice";
 
 const { Title } = Typography;
 
 export default function ProfilePage() {
-  const profile = useAppSelector((state) => state.user.profile);
-  const isLoading = useAppSelector((state) => state.user.isLoading);
+  const {data: profile, status: {isLoading}} = useAppSelector(selectProfile);
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   useEffect(() => {
-    try {
-      dispatch(getProfileThunk())
-    } catch {
-      dispatch(refreshThunk());
-    }
+    dispatch(getProfileThunk());
   }, [dispatch]);
 
-  const handleLogout = () => {
-    dispatch(signOutThunk());
-    navigate("/auth/login", { replace: true });
+  const handleSignOut = async () => {
+    await dispatch(signOutThunk());
   };
 
-  // Форматирование даты
   const formatDate = (dateString?: string) => {
     if (!dateString) return "—";
     const date = new Date(dateString);
@@ -68,7 +61,7 @@ export default function ProfilePage() {
         <Card
           title="Информация о профиле"
           extra={
-            <Button type="primary" danger onClick={handleLogout}>
+            <Button type="primary" danger onClick={handleSignOut}>
               Выйти
             </Button>
           }
