@@ -20,7 +20,8 @@ export async function signIn(data: AuthData): Promise<Token> {
 }
 
 export async function signUp(data: UserRegistration): Promise<Profile> {
-  return (await authInstance.post("/signup", data)).data;
+  const response = await authInstance.post("/signup", data);
+  return response.data;
 }
 
 export async function refresh(data: TokenRequest): Promise<Token> {

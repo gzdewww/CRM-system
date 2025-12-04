@@ -3,6 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../hooks/reduxHooks";
 import { signUpThunk } from "../../store/slices/auth/authSlice";
 import type { UserRegistration } from "../../types/auth.types";
+import {
+  LOGIN_VALIDATION,
+  PASSWORD_VALIDATION,
+  TEL_VALIDATION,
+  USERNAME_VALIDATION,
+} from "../../constants/auth.const";
 const { Title, Text } = Typography;
 
 export default function RegistrationPage() {
@@ -40,12 +46,12 @@ export default function RegistrationPage() {
           rules={[
             { required: true, message: "Введите логин" },
             {
-              min: 2,
-              max: 60,
+              min: LOGIN_VALIDATION.min,
+              max: LOGIN_VALIDATION.max,
               message: "Логин должен содержать от 2 до 60 символов ",
             },
             {
-              pattern: /^[a-zA-Z0-9_.-]+$/,
+              pattern: LOGIN_VALIDATION.pattern,
               message:
                 "Логин должен содержать только латинские буквы, цифры, точку, дефис и подчеркивание",
             },
@@ -59,8 +65,14 @@ export default function RegistrationPage() {
           rules={[
             { required: true, message: "Введите имя пользователя" },
             {
-              min: 1,
-              max: 60,
+              min: USERNAME_VALIDATION.min,
+              max: USERNAME_VALIDATION.max,
+              message: "Имя пользователя должно содержать от 1 до 60 символов",
+            },
+            {
+              pattern: USERNAME_VALIDATION.pattern,
+              message:
+                "Имя пользователя должно содержать только русские и латинские буквы, цифры, точку, дефис и подчеркивание",
             },
           ]}
         >
@@ -72,8 +84,8 @@ export default function RegistrationPage() {
           rules={[
             { required: true, message: "Введите пароль" },
             {
-              min: 6,
-              max: 60,
+              min: PASSWORD_VALIDATION.min,
+              max: PASSWORD_VALIDATION.max,
               message: "Пароль должен содержать от 6 до 60 символов",
             },
           ]}
@@ -86,8 +98,8 @@ export default function RegistrationPage() {
           rules={[
             { required: true, message: "Повторите пароль" },
             {
-              min: 6,
-              max: 60,
+              min: PASSWORD_VALIDATION.min,
+              max: PASSWORD_VALIDATION.max,
               message: "Пароль должен содержать от 6 до 60 символов",
             },
             ({ getFieldValue }) => ({
@@ -114,7 +126,7 @@ export default function RegistrationPage() {
           name="phoneNumber"
           rules={[
             {
-              pattern: /^\+7\d{10}$/,
+              pattern: TEL_VALIDATION.pattern,
               message: "Номер телефона должен быть в формате +7XXXXXXXXXX",
             },
           ]}

@@ -8,40 +8,20 @@ import {
   Typography,
   type CheckboxChangeEvent,
 } from "antd";
-import useApp from "antd/es/app/useApp";
-import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
-import { selectToken } from "../../store/slices/auth/authSelectors";
+import { useAppDispatch } from "../../hooks/reduxHooks";
 import { setRememberMe, signInThunk } from "../../store/slices/auth/authSlice";
 import type { AuthData } from "../../types/auth.types";
+import {
+  LOGIN_VALIDATION,
+  PASSWORD_VALIDATION,
+} from "../../constants/auth.const";
 
 const { Title, Text } = Typography;
 
 export default function AuthPage() {
-  const { status } = useAppSelector(selectToken);
-  const isAuth = useAppSelector((state) => state.auth.isAuth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
-  const { notification } = useApp();
-
-  useEffect(() => {
-    if (!status.isLoadingOrIdle && isAuth) {
-      const actions = (
-        <Button type="primary" size="small">
-          <Link to="/">На главную</Link>
-        </Button>
-      );
-
-      notification.open({
-        message: "Похоже, вы уже авторизованы",
-        description: "Перейти на главную страницу?",
-        duration: 10,
-        actions,
-      });
-    }
-  }, [status, isAuth, notification]);
 
   const handleSubmitLogin = async (values: AuthData) => {
     const response = await dispatch(signInThunk(values));
@@ -59,7 +39,7 @@ export default function AuthPage() {
       vertical
       align="center"
       justify="space-around"
-      style={{ height: "100%"}}
+      style={{ height: "100%" }}
     >
       <Space direction="vertical">
         <img src="/svg/auth_logo.svg" alt="" style={{ alignSelf: "start" }} />
@@ -79,12 +59,12 @@ export default function AuthPage() {
           rules={[
             { required: true, message: "Введите логин" },
             {
-              min: 2,
-              max: 60,
+              min: LOGIN_VALIDATION.min,
+              max: LOGIN_VALIDATION.max,
               message: "Логин должен содержать от 2 до 60 символов ",
             },
             {
-              pattern: /^[a-zA-Z0-9_.-]+$/,
+              pattern: LOGIN_VALIDATION.pattern,
               message:
                 "Логин должен содержать только латинские буквы, цифры, точку, дефис и подчеркивание",
             },
@@ -98,8 +78,8 @@ export default function AuthPage() {
           rules={[
             { required: true, message: "Введите пароль" },
             {
-              min: 6,
-              max: 60,
+              min: PASSWORD_VALIDATION.min,
+              max: PASSWORD_VALIDATION.max,
               message: "Пароль должен содержать от 6 до 60 символов",
             },
           ]}
@@ -107,12 +87,7 @@ export default function AuthPage() {
           <Input type="password" placeholder="Введите пароль" />
         </Form.Item>
         <Form.Item name="remember" valuePropName="checked">
-          <Flex justify="space-between">
-            <Checkbox onChange={handleToggleRememberMe}>
-              Запомнить меня
-            </Checkbox>
-            <Link to="/auth/restore">Забыли пароль?</Link>
-          </Flex>
+          <Checkbox onChange={handleToggleRememberMe}>Запомнить меня</Checkbox>
         </Form.Item>
         <Form.Item style={{ maxHeight: 1000 }}>
           <Button type="primary" htmlType="submit" block>
