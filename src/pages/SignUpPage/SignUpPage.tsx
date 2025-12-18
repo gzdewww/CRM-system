@@ -94,7 +94,7 @@ export default function RegistrationPage() {
         </Form.Item>
         <Form.Item
           label="Повторите пароль"
-          name="password_repeat"
+          name="passwordRepeat"
           rules={[
             { required: true, message: "Повторите пароль" },
             {

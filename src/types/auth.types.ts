@@ -11,10 +11,6 @@ interface AuthData {
   password: string;
 }
 
-interface RefreshToken {
-  refreshToken: string;
-}
-
 interface Profile {
   id: number;
   username: string;
@@ -49,7 +45,6 @@ type Role = "ADMIN" | "USER" | "MODERATOR";
 export type {
   UserRegistration,
   AuthData,
-  RefreshToken,
   Profile,
   ProfileRequest,
   PasswordRequest,

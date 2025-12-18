@@ -1,8 +1,14 @@
 import axios, { isAxiosError, type InternalAxiosRequestConfig } from "axios";
-import { hasRefreshToken } from "../helpers/storeTokenLocal";
-import { refreshThunk } from "../store/slices/auth/authSlice";
+import { getRefreshToken, hasRefreshToken } from "../helpers/storeTokenLocal";
 import type { ApiError } from "../store/utils/asyncUtils";
 import type { Profile } from "../types/auth.types";
+import { refresh } from "./authAPI";
+
+let accessToken = "";
+
+export const getAccessToken = () => accessToken;
+export const setAccessToken = (token: string) => (accessToken = token);
+export const removeAccessToken = () => (accessToken = "");
 
 const USER_URL = import.meta.env.VITE_USER_API_URL;
 
@@ -13,8 +19,6 @@ export const userInstance = axios.create({
 
 userInstance.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
-    const { store } = await import("../store/store");
-    const accessToken = store.getState().auth.token.data?.accessToken;
     config.headers.Authorization = `Bearer ${accessToken}`;
 
     return config;
@@ -27,6 +31,7 @@ userInstance.interceptors.response.use(
     return response;
   },
   async (error) => {
+    console.log("interceptor");
     if (isAxiosError(error)) {
       const originalConfig = error.request.config;
       if (
@@ -37,10 +42,8 @@ userInstance.interceptors.response.use(
         originalConfig._retry = true;
 
         if (hasRefreshToken()) {
-          const { store } = await import("../store/store");
-
           try {
-            await store.dispatch(refreshThunk());
+            await refresh({ refreshToken: getRefreshToken() });
             return userInstance(originalConfig);
           } catch (refreshError) {
             return Promise.reject(refreshError as ApiError);

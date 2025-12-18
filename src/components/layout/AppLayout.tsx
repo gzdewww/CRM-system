@@ -1,8 +1,8 @@
-import { UnorderedListOutlined, UserOutlined } from "@ant-design/icons";
-import { App as AntdApp, ConfigProvider, Layout, Menu } from "antd";
-import { Link, Outlet } from "react-router-dom";
+import { App as AntdApp, ConfigProvider, Layout } from "antd";
+import { Outlet } from "react-router-dom";
 import { darkTheme, lightTheme } from "../../theme/todo/themeConfig";
 import { MessageListener } from "../MessageListener";
+import SiderMenu from "../SiderMenu";
 
 const { Sider, Content } = Layout;
 
@@ -31,22 +31,7 @@ export default function AppLayout() {
         <MessageListener />
         <Layout>
           <Sider breakpoint="md" theme="light" style={siderStyle}>
-            <Menu
-              mode="inline"
-              defaultSelectedKeys={[location.pathname]}
-              items={[
-                {
-                  key: "/",
-                  icon: <UnorderedListOutlined />,
-                  label: <Link to="/">Список задач</Link>,
-                },
-                {
-                  key: "/profile",
-                  icon: <UserOutlined />,
-                  label: <Link to="/profile">Профиль</Link>,
-                },
-              ]}
-            />
+            <SiderMenu />
           </Sider>
           <Content style={contentStyle}>
             <Outlet />

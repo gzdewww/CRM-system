@@ -28,10 +28,10 @@ import {
   SIGN_UP_ERRORS,
 } from "../../../constants/auth.const";
 import { signOutThunk } from "../user/userSlice";
+import { removeAccessToken, setAccessToken } from "../../../api/userAPI";
 
 export interface AuthState {
-  isAuth: boolean;
-  token: AsyncParticle<Token>;
+  isAuth: AsyncParticle<boolean>;
   rememberMe: boolean;
 }
 
@@ -112,28 +112,28 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    addAsyncThunkCases(builder, signInThunk, "token", (state, payload) => {
-      setRefreshToken(payload?.refreshToken, state.rememberMe);
-      state.isAuth = true;
+    addAsyncThunkCases(builder, signInThunk, "isAuth", (state, payload) => {
+      setAccessToken(payload.accessToken);
+      setRefreshToken(payload.refreshToken, state.rememberMe);
     });
-    addAsyncThunkCases(builder, signUpThunk, "token");
+    addAsyncThunkCases(builder, signUpThunk, "isAuth");
     addAsyncThunkCases(
       builder,
       refreshThunk,
-      "token",
+      "isAuth",
       (state, payload) => {
+        setAccessToken(payload.accessToken);
         setRefreshToken(payload?.refreshToken, state.rememberMe);
-        state.isAuth = true;
       },
-      (state) => {
-        state.isAuth = false;
+      () => {
         removeRefreshToken();
+        removeAccessToken();
       }
     );
-    
-    builder.addCase(signOutThunk.fulfilled, (state) => {
-      state.token = initialAuthState.token;
-      state.isAuth = false;
+
+    builder.addCase(signOutThunk.fulfilled, (store) => {
+      store.isAuth.data = false;
+      removeAccessToken();
       removeRefreshToken();
     });
   },
