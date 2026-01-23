@@ -2,23 +2,22 @@ import { Button, Flex, Form, Input } from "antd";
 import useApp from "antd/es/app/useApp";
 import { isAxiosError } from "axios";
 import { memo } from "react";
-import { addTodo } from "../../api/api";
+import { addTodo } from "../../api/todoAPI";
 import { TODO_TITLE_LENGTH } from "../../constants/todo.const";
-import type { TodoFormValues, TodoInfo } from "../../types/todo.types";
+import type { TodoFormValues } from "../../types/todo.types";
 
 type TodoFormProps = {
-  onAddTodo: (tab: keyof TodoInfo) => Promise<void>;
-  activeTab: keyof TodoInfo;
+  onAddTodo: () => Promise<void>;
 };
 
-export default memo(function TodoForm({ onAddTodo, activeTab }: TodoFormProps) {
+export default memo(function TodoForm({ onAddTodo }: TodoFormProps) {
   const [form] = Form.useForm();
   const { message } = useApp();
 
   const handleSubmitTodo = async (values: TodoFormValues) => {
     try {
       await addTodo(values.todo_title);
-      onAddTodo(activeTab);
+      onAddTodo();
       form.resetFields();
       message.success("Задача добавлена");
     } catch (error) {

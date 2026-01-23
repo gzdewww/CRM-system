@@ -1,61 +1,45 @@
-import useApp from "antd/es/app/useApp";
-import { isAxiosError } from "axios";
-import { useCallback, useEffect, useState } from "react";
-import { getTodos } from "../../api/api";
+import { Spin } from "antd";
+import { useCallback, useEffect } from "react";
 import TodoForm from "../../components/todo/TodoForm";
 import TodoList from "../../components/todo/TodoList";
 import TodoTabs from "../../components/todo/TodoTabs";
-import type { Todo, TodoInfo } from "../../types/todo.types";
-import { TODO_TAB_DEFAULT_STATE } from "../../constants/todo.const";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import { getTodosThunk } from "../../store/slices/todo/todoSlice";
+import {
+  selectActiveTab,
+  selectTodos,
+} from "../../store/slices/todo/todoSelectors";
 
 export default function TodoListPage() {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [info, setInfo] = useState<TodoInfo>();
-  const [activeTab, setActiveTab] = useState<keyof TodoInfo>("all");
+  const { status: todosStatus } = useAppSelector(selectTodos);
+  const { isLoading } = todosStatus;
+  const activeTab = useAppSelector(selectActiveTab);
+  const dispatch = useAppDispatch();
 
-  const { message } = useApp();
-
-  const fetchTodos = useCallback(
-    async (tab: keyof TodoInfo) => {
-      try {
-        await getTodos(tab).then((res) => {
-          setTodos(res.data);
-          setInfo(res.info ?? TODO_TAB_DEFAULT_STATE);
-        });
-      } catch (error) {
-        if (isAxiosError(error)) {
-          if (error.response) {
-            message.error(`Error data: ${error.response.data}`);
-          } else if (error.request) {
-            message.error("Request error:", error.request);
-          }
-        }
-        if (error instanceof Error) {
-          message.error(`Error message: ${error.message}`);
-        }
-      }
-    },
-    [message]
-  );
+  const fetchTodos = useCallback(async () => {
+    await dispatch(getTodosThunk(activeTab));
+  }, [activeTab, dispatch]);
 
   useEffect(() => {
-    fetchTodos(activeTab);
+    fetchTodos();
     const interval = setInterval(() => {
-      fetchTodos(activeTab);
+      fetchTodos();
     }, 5000);
 
     return () => {
       clearInterval(interval);
     };
-  }, [fetchTodos, activeTab]);
+  }, [fetchTodos]);
 
   return (
     <>
-      <TodoForm onAddTodo={fetchTodos} activeTab={activeTab} />
+      <TodoForm onAddTodo={fetchTodos} />
 
-      <TodoTabs info={info} activeTab={activeTab} setActiveTab={setActiveTab} />
+      <TodoTabs />
 
-      <TodoList todos={todos} onUpdateTodo={fetchTodos} activeTab={activeTab} />
+      <Spin spinning={isLoading}>
+        <TodoList onUpdateTodo={fetchTodos} />
+      </Spin>
     </>
   );
 }

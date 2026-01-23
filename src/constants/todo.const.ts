@@ -1,7 +1,7 @@
-import { colors } from "../theme/colors";
+import { colors } from "../theme/todo/colors";
 import type { TodoInfo } from "../types/todo.types";
 
-const TODO_TAB_DEFAULT_STATE = {
+const TODO_INFO_DEFAULT_STATE = {
   all: 0,
   inWork: 0,
   completed: 0,
@@ -25,8 +25,8 @@ const TODO_TITLE_LENGTH = {
 };
 
 export {
-  TODO_TAB_DEFAULT_STATE,
   TODO_TAB_COLOR,
+  TODO_INFO_DEFAULT_STATE,
   TODO_TAB_LABEL,
   TODO_TITLE_LENGTH,
 };
