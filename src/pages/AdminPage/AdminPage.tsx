@@ -14,10 +14,13 @@ import {
   getProfileThunk,
   signOutThunk,
 } from "../../store/slices/users/usersSlice";
+import { getUsers } from "../../api/userAPI";
 
 const { Title } = Typography;
 
-export default function ProfilePage() {
+console.log(getUsers());
+
+export default function AdminPage() {
   const {
     data: profile,
     status: { isLoading },

@@ -1,4 +1,4 @@
-import { UnorderedListOutlined, UserOutlined } from "@ant-design/icons";
+import { TeamOutlined, UnorderedListOutlined, UserOutlined } from "@ant-design/icons";
 import { Menu } from "antd";
 import { Link } from "react-router-dom";
 
@@ -12,6 +12,11 @@ const items = [
     key: "/profile",
     icon: <UserOutlined />,
     label: <Link to="/profile">Профиль</Link>,
+  },
+  {
+    key: "/users",
+    icon: <TeamOutlined />,
+    label: <Link to="/users">Пользователи</Link>,
   },
 ];
 

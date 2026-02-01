@@ -11,6 +11,7 @@ import AuthPage from "./pages/AuthPage/AuthPage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import RegistrationPage from "./pages/SignUpPage/SignUpPage";
 import TodoListPage from "./pages/TodoListPage/TodoListPage";
+import AdminPage from "./pages/AdminPage/AdminPage";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: "profile",
         Component: ProfilePage,
+      },
+      {
+        path: "users",
+        Component: AdminPage,
       },
     ],
   },
