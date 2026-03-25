@@ -1,7 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
-import type { UserState } from "./usersSlice";
 import { getAsyncRequestData } from "../../utils/asyncUtils";
+import type { UserState } from "./usersSlice";
 
 export const selectUserStore = (state: RootState): UserState => state.user;
 
