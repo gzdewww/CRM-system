@@ -106,7 +106,7 @@ export async function unblockUser(id: number): Promise<Profile> {
 
 export async function setRoles(id: number, roles: Role[]): Promise<Profile> {
   const request: UserRolesRequest = { roles };
-  return (await adminInstance.put(`/users/${id}/rights`, request)).data;
+  return (await adminInstance.post(`/users/${id}/rights`, request)).data;
 }
 
 export async function deleteUser(id: number): Promise<void> {

@@ -30,16 +30,13 @@ const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
 export default function AppLayout() {
   const dispatch = useAppDispatch();
-  const {
-    data: profile,
-    status: { isIdle },
-  } = useAppSelector(selectProfile);
+  const { data: profile } = useAppSelector(selectProfile);
 
   useEffect(() => {
-    if (!profile && isIdle) {
+    if (!profile) {
       dispatch(getProfileThunk());
     }
-  }, [dispatch, profile, isIdle]);
+  }, [dispatch, profile]);
 
   return (
     <ConfigProvider theme={isDarkMode ? darkTheme : lightTheme}>
