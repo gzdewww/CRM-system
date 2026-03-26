@@ -40,6 +40,15 @@ interface TokenRequest {
   refreshToken: string | null;
 }
 
+interface MetaResponse<T> {
+  data: T[];
+  meta: {
+    totalAmount: number;
+    sortBy: string;
+    sortOrder: "asc" | "desc";
+  };
+}
+
 type Role = "ADMIN" | "USER" | "MODERATOR";
 
 export type {
@@ -50,5 +59,6 @@ export type {
   PasswordRequest,
   Token,
   TokenRequest,
+  MetaResponse,
   Role,
 };

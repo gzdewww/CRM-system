@@ -27,7 +27,7 @@ import {
   SIGN_IN_ERRORS,
   SIGN_UP_ERRORS,
 } from "../../../constants/auth.const";
-import { signOutThunk } from "../user/userSlice";
+import { signOutThunk } from "../users/usersSlice";
 import { removeAccessToken, setAccessToken } from "../../../api/userAPI";
 
 export interface AuthState {
@@ -128,7 +128,7 @@ const authSlice = createSlice({
       () => {
         removeRefreshToken();
         removeAccessToken();
-      }
+      },
     );
 
     builder.addCase(signOutThunk.fulfilled, (store) => {

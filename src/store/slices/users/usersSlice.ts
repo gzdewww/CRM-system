@@ -1,12 +1,18 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
-import { getProfile, signOut } from "../../../api/userAPI";
+import {
+  getProfile,
+  removeAccessToken,
+  signOut,
+} from "../../../api/userAPI";
+import { removeRefreshToken } from "../../../helpers/storeTokenLocal";
 import type { Profile } from "../../../types/auth.types";
 import { initialUserState } from "../../initialState";
 import {
   addAsyncThunkCases,
   type ApiError,
   type AsyncParticle,
+  createAsyncParticle,
 } from "../../utils/asyncUtils";
 import { refreshThunk } from "../auth/authSlice";
 
@@ -14,7 +20,7 @@ export interface UserState {
   profile: AsyncParticle<Profile>;
 }
 
-export const getProfileThunk = createAsyncThunk(
+export const getProfileThunk = createAsyncThunk<Profile>(
   "user/getProfile",
   async (_, { rejectWithValue, dispatch }) => {
     try {
@@ -25,8 +31,15 @@ export const getProfileThunk = createAsyncThunk(
           const refreshResult = await dispatch(refreshThunk());
           if (refreshResult.type === "auth/refresh/fulfilled") {
             return await getProfile();
+          } else {
+            return rejectWithValue({
+              message: "Сессия истекла",
+              status: error.response?.status,
+            });
           }
         } else {
+          removeAccessToken();
+          removeRefreshToken();
           return rejectWithValue({
             message: error.response?.data.message,
             status: error.response?.status,
@@ -38,7 +51,7 @@ export const getProfileThunk = createAsyncThunk(
       }
       return rejectWithValue(error as ApiError);
     }
-  }
+  },
 );
 
 export const signOutThunk = createAsyncThunk<
@@ -68,6 +81,9 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     addAsyncThunkCases(builder, getProfileThunk, "profile");
+    builder.addCase(signOutThunk.fulfilled, (state) => {
+      state.profile = createAsyncParticle<Profile>(null);
+    });
   },
 });
 

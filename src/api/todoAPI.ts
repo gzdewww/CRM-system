@@ -14,7 +14,7 @@ const todoInstance = axios.create({
 });
 
 export async function getTodos(
-  filter?: keyof TodoInfo
+  filter?: keyof TodoInfo,
 ): Promise<MetaResponse<Todo, TodoInfo>> {
   return (await todoInstance.get("", { params: { filter } })).data;
 }

@@ -7,6 +7,8 @@ import "./App.scss";
 import AppLayout from "./components/layout/AppLayout";
 import AuthLayout from "./components/layout/AuthLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminPage from "./pages/AdminPage/AdminPage";
+import AdminUserPage from "./pages/AdminPage/AdminUserPage";
 import AuthPage from "./pages/AuthPage/AuthPage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import RegistrationPage from "./pages/SignUpPage/SignUpPage";
@@ -27,6 +29,14 @@ const router = createBrowserRouter([
       {
         path: "profile",
         Component: ProfilePage,
+      },
+      {
+        path: "users",
+        Component: AdminPage,
+      },
+      {
+        path: "users/:id",
+        Component: AdminUserPage,
       },
     ],
   },
